@@ -37,7 +37,7 @@ async function run(){
             const users = req.body;
             const result = await usersCollection.insertOne(users);
             res.send(result);
-        })
+        });
 
         await client.db("admin").command({ping: 1});
         console.log("Pinged the mondoDB server. It is connected")
