@@ -23,7 +23,8 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         await client.connect();
-        const usersCollection = db.collection("users");
+        const userMain = client.db("userMain");
+        const usersCollection = userMain.collection("users");
 
         //getting all the users api:
         app.get("/users", async(req, res)=>{
