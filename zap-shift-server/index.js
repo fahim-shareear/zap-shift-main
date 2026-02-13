@@ -23,6 +23,21 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         await client.connect();
+        const usersCollection = db.collection("users");
+
+        //getting all the users api:
+        app.get("/users", async(req, res)=>{
+            const cursor = usersCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        //posting api for creating users:
+        app.post("/users", async(req, res)=>{
+            const users = req.body;
+            const result = await usersCollection.insertOne(users);
+            res.send(result);
+        })
 
         await client.db("admin").command({ping: 1});
         console.log("Pinged the mondoDB server. It is connected")
