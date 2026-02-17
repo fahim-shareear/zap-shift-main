@@ -10,7 +10,7 @@ const Footer = () => {
                     <p className="font-bold">
                         ZAPSHIFT Ltd.
                         <br />
-                        Providing reliable tech since 2024
+                        Providing reliable delivery service since 2024
                     </p>
                     <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
                 </aside>
