@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router';
 import { FaArrowCircleRight } from "react-icons/fa";
+import Logo from '../../utils/Logo';
 
 const Navbar = () => {
     const links = <>
@@ -25,7 +26,7 @@ const Navbar = () => {
                 {links}
             </ul>
             </div>
-            <a className="btn btn-ghost text-xl">daisyUI</a>
+            <Logo></Logo>
         </div>
         <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1">
