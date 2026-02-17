@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/logo.png';
+import logo from "../../assets/logo.png"
 import { Link } from 'react-router';
 
 const Logo = () => {
@@ -8,7 +8,7 @@ const Logo = () => {
             <Link to="/">
                 <div className="flex items-end m-2">
                     <img src={logo} alt="zap-shift logo" />
-                    <h3 className="font-bold text-2xl -ms-2.5 text-primary">ZapShift</h3>
+                    <h3 className="font-bold text-2xl -ms-2.5">ZapShift</h3>
                 </div>
             </Link>
         </>
