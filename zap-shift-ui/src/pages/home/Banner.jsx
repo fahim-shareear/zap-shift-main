@@ -22,7 +22,7 @@ const Banner = () => {
             className='mt-5 rounded-xl overflow-hidden'
         >
             {images.map((img, index) => (
-                <div key={index} className="relative h-[300px] md:h-[500px] lg:h-[600px]">
+                <div key={index} className="relative h-75 md:h-125 lg:h-150">
                     {/* Object-cover ensures the image fills the area without stretching */}
                     <img 
                         src={img} 
