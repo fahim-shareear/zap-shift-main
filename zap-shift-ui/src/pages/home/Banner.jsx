@@ -19,7 +19,7 @@ const Banner = () => {
             emulateTouch={true}
             showStatus={false}
             showThumbs={false}
-            className='mt-5'
+            className='mt-5 rounded-xl overflow-hidden'
         >
             {images.map((img, index) => (
                 <div key={index} className="relative h-[300px] md:h-[500px] lg:h-[600px]">
@@ -31,16 +31,16 @@ const Banner = () => {
                     />
                     
                     {/* Overlay: Centered on mobile, Left-aligned on Desktop */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 p-4 md:items-start md:justify-end md:pb-20 md:pl-20">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 md:items-start md:justify-end md:pb-20 md:pl-20">
                         <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <button className="bg-secondary text-primary rounded-full px-6 py-3 flex items-center justify-center cursor-pointer font-bold text-sm md:text-xl transition-transform hover:scale-105">
+                            <button className="bg-secondary text-primary rounded-full px-4 py-3 flex items-center justify-center cursor-pointer font-bold text-sm md:text-xl transition-transform hover:scale-105">
                                 Track Your Parcel 
                                 <span className="ml-3 text-2xl md:text-3xl -rotate-45 text-primary">
                                     <FaArrowCircleRight />
                                 </span>
                             </button>
                             
-                            <button className="text-sm md:text-xl font-semibold rounded-md px-6 py-2 cursor-pointer border border-white bg-white/10 text-white backdrop-blur-sm hover:bg-white hover:text-black transition-all">
+                            <button className="text-sm md:text-xl font-semibold rounded-md px-6 py-2 cursor-pointer border border-white bg-white/10 text-primary backdrop-blur-sm hover:bg-white hover:text-black transition-all">
                                 Be a Rider
                             </button>
                         </div>
