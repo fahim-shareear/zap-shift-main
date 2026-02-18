@@ -8,7 +8,7 @@ import { FaArrowCircleRight } from 'react-icons/fa';
 
 const Banner = () => {
     return (
-        <Carousel autoPlay={true} interval={3000} infiniteLoop={true} className='mt-5' emulateTouch={true} dynamicHeight={true}>
+        <Carousel autoPlay={true} interval={3000} infiniteLoop={true} className='mt-5' emulateTouch={true}>
             <div className="relative">
                 <img src={bannerImg1} />
                 <div className="flex itens-center justify-center gap-4 absolute left-20 bottom-25">
