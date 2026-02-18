@@ -19,7 +19,7 @@ const OurServices = () => {
             </div>
 
             <div className="p-5">
-                <div className="card grid grid-cols-1 md:grid-cols-3 gap-4 mx-w-7xl mx-auto lg:px-20">
+                <div className="card grid grid-cols-1 md:grid-cols-3 gap-4 mx-w-7xl mx-auto lg:px-20 py-5">
                     {services.map((item) => (
                         <div key={item.id}
                         className="px-3 py-3 shadow-md bg-white rounded-md flex items-center justify-center flex-col text-center
