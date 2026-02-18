@@ -33,10 +33,10 @@ const Navbar = () => {
                     {links}
                 </ul>
             </div>
-            <div className="navbar-end flex gap-4">
-                <button className="cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold p-3 w-25 text-center rounded-md text-xl">Log In</button>
+            <div className="navbar-end flex gap-4 sm:ml-10">
+                <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold p-3 w-25 text-center rounded-md md:text-xl">Log In</button>
 
-                <button className="cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner flex items-center gap-3 bg-secondary text-primary font-bold p-3 rounded-md text-xl">Be a Rider <span className="text-3xl -rotate-45"><FaArrowCircleRight /></span></button>
+                <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner flex items-center gap-3 bg-secondary text-primary font-bold p-3 rounded-md md:text-xl">Be a Rider <span className="md:text-3xl text-md sm:px-2 sm:py-5 no-wrap -rotate-45"><FaArrowCircleRight /></span></button>
             </div>
         </div>
     );
