@@ -3,6 +3,7 @@ import Banner from './Banner';
 import HowItWorks from './HowItWorks';
 import OurServices from './OurServices';
 import Swipper from './Swipper';
+import Desclaimer from './Desclaimer';
 
 const Home = () => {
     return (
@@ -11,6 +12,7 @@ const Home = () => {
             <HowItWorks></HowItWorks>
             <OurServices></OurServices>
             <Swipper></Swipper>
+            <Desclaimer></Desclaimer>
         </div>
     );
 };
