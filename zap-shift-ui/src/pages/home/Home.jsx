@@ -5,6 +5,9 @@ import OurServices from './OurServices';
 import Swipper from './Swipper';
 import Desclaimer from './Desclaimer';
 import CustomerBanner from './CustomerBanner';
+import Feedback from './Feedback';
+
+const feedbackPromise = fetch('http://localhost:3000/feedback').then(res => res.json());
 
 const Home = () => {
     return (
@@ -15,6 +18,7 @@ const Home = () => {
             <Swipper></Swipper>
             <Desclaimer></Desclaimer>
             <CustomerBanner></CustomerBanner>
+            <Feedback feedbackPromise={feedbackPromise}></Feedback>
         </div>
     );
 };
