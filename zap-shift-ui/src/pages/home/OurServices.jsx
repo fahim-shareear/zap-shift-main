@@ -24,7 +24,7 @@ const OurServices = () => {
                         <div key={item.id}
                         className="px-3 py-3 shadow-md bg-white rounded-md flex items-center justify-center flex-col text-center
                         transition-all duration-400 hover:bg-secondary hover:scale-105">
-                            <div>
+                            <div className="bg-gray-400 rounded-full">
                                 <img src={service} alt="servicelogo" />
                             </div>
                             <h2 className="text-primary font-bold p-3">{item.title}</h2>
