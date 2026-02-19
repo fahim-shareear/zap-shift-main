@@ -4,6 +4,7 @@ import HowItWorks from './HowItWorks';
 import OurServices from './OurServices';
 import Swipper from './Swipper';
 import Desclaimer from './Desclaimer';
+import CustomerBanner from './CustomerBanner';
 
 const Home = () => {
     return (
@@ -13,6 +14,7 @@ const Home = () => {
             <OurServices></OurServices>
             <Swipper></Swipper>
             <Desclaimer></Desclaimer>
+            <CustomerBanner></CustomerBanner>
         </div>
     );
 };
