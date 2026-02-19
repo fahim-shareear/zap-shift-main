@@ -23,8 +23,9 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         await client.connect();
-        const userMain = client.db("userMain");
+        const userMain = client.db("zapShift");
         const usersCollection = userMain.collection("users");
+        const feedback = userMain.collection("feedback");
 
         //getting all the users api:
         app.get("/users", async(req, res)=>{
@@ -37,6 +38,13 @@ async function run(){
         app.post("/users", async(req, res)=>{
             const users = req.body;
             const result = await usersCollection.insertOne(users);
+            res.send(result);
+        });
+
+        //getting the feedback data and posting also:
+        app.get("/feedback", async(req, res)=>{
+            const cursor = feedback.find();
+            const result = await cursor.toArray();
             res.send(result);
         });
 
