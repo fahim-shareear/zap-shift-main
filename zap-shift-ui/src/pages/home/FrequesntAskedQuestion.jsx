@@ -26,7 +26,19 @@ const FrequesntAskedQuestion = () => {
                 </div>
             </div>
             <div className="flex items-center justify-center gap-1">
-                <button className="font-bold text-primary bg-secondary cursor-pointer trasition-all duration-150 active:scale-95 active:shadow-inner rounded-md px-5 py-4 text-xl">See More FAQ</button>
+                <button className="font-bold
+                text-primary 
+                bg-secondary 
+                cursor-pointer 
+                trasition-all 
+                duration-150 
+                active:scale-95 
+                active:shadow-inner 
+                rounded-md 
+                px-5 
+                py-4 
+                text-xl"
+                >See More FAQ</button>
                 <FaArrowAltCircleRight className="-rotate-45 text-5xl text-primary"></FaArrowAltCircleRight>
             </div>
         </div>
