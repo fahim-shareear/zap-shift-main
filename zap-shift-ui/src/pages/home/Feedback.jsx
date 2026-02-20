@@ -29,14 +29,16 @@ const Feedback = ({ feedbackPromise }) => {
                 grabCursor={true}
                 centeredSlides={true}
                 slidesPerView={'auto'}
+                spaceBetween={50}
                 autoplay={{
                     duraton: 3000
                 }}
                 coverflowEffect={{
-                    rotate: 50,
-                    stretch: 0,
+                    rotate: 30,
+                    stretch: '30%',
                     depth: 100,
                     modifier: 1,
+                    scale: 0.75,
                     slideShadows: true,
                 }}
                 pagination={true}
