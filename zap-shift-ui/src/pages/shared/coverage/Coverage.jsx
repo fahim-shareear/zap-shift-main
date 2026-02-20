@@ -33,7 +33,7 @@ const Coverage = () => {
                             key={index}
                             position={[center.latitude, center.longitude]}>
                             <Popup>
-                                A pretty CSS3 popup. <br /> Easily customizable.
+                                {center.covered_area} <br /> {center.region}
                             </Popup>
                         </Marker>)
                     }

@@ -6,6 +6,7 @@ import Coverage from "../pages/shared/coverage/Coverage";
 const routes = createBrowserRouter([
     {
         path: '/', Component: RootLayout,
+        hydrateFallbackElement: <h2>Loading.....</h2>,
         children: [
             {index: true, Component: Home},
             {path: "coverage", Component: Coverage,
