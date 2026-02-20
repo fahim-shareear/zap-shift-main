@@ -8,7 +8,9 @@ const routes = createBrowserRouter([
         path: '/', Component: RootLayout,
         children: [
             {index: true, Component: Home},
-            {path: "coverage", Component: Coverage}
+            {path: "coverage", Component: Coverage,
+                loader: () => fetch("/serviceCenter.json").then(res => res.json())
+            }
         ]
     }
 ]);
