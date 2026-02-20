@@ -33,7 +33,7 @@ const Coverage = () => {
                             key={index}
                             position={[center.latitude, center.longitude]}>
                             <Popup>
-                                {center.covered_area} <br /> {center.region}
+                                <strong>{center.city}</strong> <br /> <strong>Service Area:</strong> {center.covered_area.join(' ')}
                             </Popup>
                         </Marker>)
                     }
