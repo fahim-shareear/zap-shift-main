@@ -1,59 +1,74 @@
-import React, { useRef } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, } from "react-leaflet";
-import '../../../../node_modules/leaflet/dist/leaflet.css';
+import React, { useRef, useState } from 'react';
 import { FaSearchLocation } from "react-icons/fa";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useLoaderData } from 'react-router';
+import '../../../../node_modules/leaflet/dist/leaflet.css';
 
 const Coverage = () => {
-    const position = [23.8103, 90.4125];
+    const position = [23.8041, 90.4152]
     const serviceCenters = useLoaderData();
     const mapRef = useRef(null);
-    // console.log(serviceCenters);
+    const [search, setSearch] = useState("");
+
     const searchCity = e => {
         e.preventDefault();
-        const location = e.target.location.value;
-        const district = serviceCenters.find(c => c.district.toLowerCase()
-        .includes(location.toLowerCase()));
+        const location = search
+        const district = serviceCenters.find(c => c.district.toLowerCase().
+            includes(location.toLowerCase()));
 
         if(district){
             const coord = [district.latitude, district.longitude];
-            // console.log(district, coord);
             mapRef.current.flyTo(coord, 14);
         };
     };
 
+    const clearSearch = () => {
+        // e.preventDefault();
+        setSearch("");
+    }
 
     return (
-        <div className="rounded-xl shadow-md m-7 p-6">
-            <div className="ml-4 mb-5">
-                <h1 className="font-bold text-4xl text-primary">We are available in 64 districts</h1>
+        <div className="md:max-w-4xl mx-auto rounded shadow-md p-5 m-5">
+            <div className="max-w-2xl grow ml-3">
+                <h1 className="font-bold md:text-4xl text-2xl text-primary">We are available in 64 districts</h1>
             </div>
-            <div className="search ml-4">
+            {/* search functionality ui */}
+            <div className='flex items-center jsutify-center gap-4 m-5'>
                 <div>
-                    <form className="flex items-center gap-2" onSubmit={searchCity}>
-                        <input type="text" name='location' className="text-xl px-5 py-2 border bg-gray-200 border-gray-400 rounded-xl" placeholder='search your location' />
-                        <button className="text-3xl cursor-pointer"><FaSearchLocation /></button>
+                    <form onSubmit={searchCity} className="flex items-center justify-center gap-4">
+                        <div className="relative">
+                            <input className="border border-gray-300 px-4 bg-gray-200 rounded-md py-1"
+                                type="text"
+                                name='location'
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder='Search you nearest branch' />
+                            <button type='button' className="text-[18px] font-bold text-primary absolute top-1 right-1 transition-all duration-150 active:scale-95 active:shadow-inner cursor-pointer"
+                            onClick={clearSearch}>x</button>
+                        </div>
+                        <div>
+                            <button className="font-bold text-2xl text-primary transition-all active:scale-95 active:shadow-inner cursor-pointer"><FaSearchLocation /></button>
+                        </div>
                     </form>
                 </div>
-            </div>
 
-            {/* this is the map container starting */}
-            <div className="md:max-w-4xl mx-auto max-w-3xl mb-5 h-200 rounded-xl">
+            </div>
+            {/* Map view here */}
+            <div className="md:max-w-4xl mx-auto max-w-3xl h-200 rounded-xl p-6">
                 <MapContainer
                     center={position}
                     zoom={8}
-                    scrollWheelZoom={true}
+                    scrollWheelZoom={false}
                     ref={mapRef}
                     className="w-full h-full rounded-xl m-5">
-                    <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png">
-                    </TileLayer>
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
                     {
-                        serviceCenters.map((center, index) => <Marker
-                            key={index}
-                            position={[center.latitude, center.longitude]}>
+                        serviceCenters.map((center, index) => <Marker position={[center.latitude, center.longitude]} key={index}>
                             <Popup>
-                                <strong>{center.city}</strong> <br /> <strong>Service Area:</strong> {center.covered_area.join(' ')}
+                                <strong>District: {center.district}</strong> <br /> <strong>Service Area:</strong>  {center.covered_area.join(" ")}
                             </Popup>
                         </Marker>)
                     }
