@@ -27,7 +27,7 @@ const About = () => {
                 <p className="text-primary py-4">Enjoy fast, reliable parcel delivery with real-time tracking and zero hassle. From personal packages to business shipments — we deliver on time, every time.</p>
             </div>
 
-            <div className='border-b mb-6 max-w-4xl mx-auto'></div>
+            <div className='border-b mb-6 max-w-4xl mx-auto border-primary'></div>
 
             {/* tabs */}
             <div className="md:max-w-3xl max-w-2xl py-6 mx-auto">
