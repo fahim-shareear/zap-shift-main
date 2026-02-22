@@ -28,7 +28,7 @@ const Coverage = () => {
     };
 
     return (
-        <div className="md:max-w-4xl mx-auto rounded shadow-md p-5 m-5">
+        <div className="md:max-w-4xl mx-auto rounded shadow-md p-5 m-5 z-100">
             <div className="max-w-2xl grow ml-3">
                 <h1 className="font-bold md:text-4xl text-2xl text-primary">We are available in 64 districts</h1>
             </div>
