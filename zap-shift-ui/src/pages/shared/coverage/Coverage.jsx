@@ -25,7 +25,7 @@ const Coverage = () => {
     const clearSearch = () => {
         // e.preventDefault();
         setSearch("");
-    }
+    };
 
     return (
         <div className="md:max-w-4xl mx-auto rounded shadow-md p-5 m-5">
