@@ -36,7 +36,8 @@ const About = () => {
                     <button 
                     key={tab.id}
                     onClick={() => setActiveTabs(tab.id)}
-                    className={`pb-2 text-sm mr-5 transition-all duration-300 ease-linear font-bold m-2 ${activeTabs === tab.id ? 'text-green-600 border-b-2 border-green-600 font-semibold' : "text-gray-600"}`}>
+                    className={`pb-2 text-sm mr-5 transition-all duration-300 ease-linear font-bold m-2 
+                    ${activeTabs === tab.id ? 'text-green-600 border-b-2 border-green-600 font-semibold' : "text-gray-600"}`}>
                         {tab.label}
                     </button>))
                 }
@@ -44,9 +45,9 @@ const About = () => {
                 {/* content */}
                 <div className='mt-4 p-4 text-gray-600 leading-relaxed space-y-4 max-w-4xl mx-auto transition-all ease-linear overflow-auto h-95 md:h-full'>
                     <p className="trnasition-all ease-linear font-medium">{content[activeTabs]}</p>
+                    {/* <p className="trnasition-all ease-linear font-medium">{content[activeTabs]}</p>
                     <p className="trnasition-all ease-linear font-medium">{content[activeTabs]}</p>
-                    <p className="trnasition-all ease-linear font-medium">{content[activeTabs]}</p>
-                    <p className="trnasition-all ease-linear font-medium">{content[activeTabs]}</p>
+                    <p className="trnasition-all ease-linear font-medium">{content[activeTabs]}</p> */}
                 </div>
             </div>
         </div>
