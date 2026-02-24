@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import useAuth from '../../../hooks/useAuth';
 
 const Register = () => {
     const [eye, setEye] = useState(false);
@@ -9,8 +10,17 @@ const Register = () => {
         handleSubmit,
         formState: { errors } } = useForm();
 
+    const {registerUser} = useAuth();
+
     const handleRegister = (data) => {
         console.log(data);
+        registerUser(data.email, data.password)
+            .then(result => {
+                console.log(result.user);
+            })
+            .catch(error =>{
+                console.log(error);
+            });
     };
 
     const handleEye = (e) =>{
