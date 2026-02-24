@@ -38,11 +38,13 @@ const Register = () => {
                     <div className='relative'>
                         {/* Pasword Field */}
                         <label className="label font-bold">Password</label>
-                        <input type={eye ? "text" : "password"} className="input text-[16px] w-full" placeholder="Password" {...register("password", { required: true, minLength: 6 }, { pattern: /^[A-Za-z]+$/i })} />
+                        <input type={eye ? "text" : "password"} className="input text-[16px] w-full" placeholder="Password" {...register("password", { required: true, 
+                            minLength: 6,
+                            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/ })} />
                         <button className="absolute top-7 text-xl right-4" onClick={handleEye}>{eye ? <FaEyeSlash className="trnasition-all duration-150 ease-linear"></FaEyeSlash> : <FaEye></FaEye>}</button>
                         {errors.password?.type === 'required' && <p className="text-red-500">Password is required</p>}
                         {errors.password?.type === 'minLength' && <p className="text-red-500">Password must be at least 6 character or longer</p>}
-                        {errors.password?.type === 'pattern' && <p className="text-red-500">Password must contain one capital letter one small letter</p>}
+                        {errors.password?.type === 'pattern' && <p className="text-red-500 py-1">Password must contain one capital letter one small letter and one special character</p>}
                     </div>
 
                     <button className="btn btn-secondary text-black mt-4">Register</button>
