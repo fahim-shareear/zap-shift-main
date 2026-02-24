@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
 import { FaArrowCircleRight } from "react-icons/fa";
 import Logo from '../../components/logo/Logo';
 
@@ -34,12 +34,16 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end flex gap-4 sm:ml-10">
-                <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold px-3 py-3 w-25 text-center rounded-xl md:text-xl">Log In</button>
+                <Link to="/login">
+                    <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold px-3 py-3 w-25 text-center rounded-xl md:text-xl">Log In</button>
+                </Link>
 
-                <div className="flex items-center">
-                    <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner bg-secondary text-primary font-bold px-3 py-3 rounded-xl md:text-xl">Be a Rider</button>
-                    <span className="md:text-4xl text-md sm:px-2 sm:py-5 -rotate-45"><FaArrowCircleRight /></span>
-                </div>
+                <Link to="/register">
+                    <div className="flex items-center overflow-hidden h-15 w-43">
+                        <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner bg-secondary text-primary font-bold px-3 py-3 rounded-xl md:text-xl">Be a Rider</button>
+                        <span className="md:text-4xl text-md sm:px-2 sm:py-5 -rotate-45"><FaArrowCircleRight /></span>
+                    </div>
+                </Link>
             </div>
         </div>
     );
