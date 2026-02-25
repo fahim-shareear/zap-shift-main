@@ -52,12 +52,20 @@ const Navbar = () => {
                 </Link>
                 }
 
-                <Link to="/register">
-                    <div className="flex items-center overflow-hidden h-15 w-43">
+                {
+                    user ? <Link to="/register">
+                    <div className="flex items-center overflow-hidden h-15">
                         <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner bg-secondary text-primary font-bold px-3 py-3 rounded-xl md:text-xl">Be a Rider</button>
                         <span className="md:text-4xl text-md sm:px-2 sm:py-5 -rotate-45"><FaArrowCircleRight /></span>
                     </div>
+                </Link> 
+                :
+                <Link to="/register">
+                    <div className="flex items-center overflow-hidden h-15">
+                        <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner bg-secondary text-primary font-bold px-3 py-3 rounded-xl md:text-xl">Register</button>
+                    </div>
                 </Link>
+                }
             </div>
         </div>
     );
