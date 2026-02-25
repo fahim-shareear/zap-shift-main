@@ -16,8 +16,8 @@ const Login = () => {
         setEye(!eye);
     };
 
-    const handleLogin = () => {
-        signInUser()
+    const handleLogin = (data) => {
+        signInUser(data.email, data.password)
             .then(result => {
                 console.log(result.user);
             })
