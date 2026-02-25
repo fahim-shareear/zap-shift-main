@@ -2,8 +2,19 @@ import React from 'react';
 import { Link, NavLink } from 'react-router';
 import { FaArrowCircleRight } from "react-icons/fa";
 import Logo from '../../components/logo/Logo';
+import useAuth from '../../hooks/useAuth';
 
 const Navbar = () => {
+    const {user, logOut} = useAuth();
+
+    const closeAuth = () =>{
+        logOut()
+            .then()
+            .catch(error => {
+                console.log(error.message);
+            })
+    }
+
     const links = <>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/services">Services</NavLink></li>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/coverage">Coverage</NavLink></li>
@@ -34,9 +45,12 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end flex gap-4 sm:ml-10">
-                <Link to="/login">
+                {
+                    user ? <button onClick={closeAuth} className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner
+                    border boreder-gray-500 text-primary font-bold px-3 py-3 w-25 text-center rounded-xl text-[15px]">Sign Out</button> : <Link to="/login">
                     <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold px-3 py-3 w-25 text-center rounded-xl md:text-xl">Log In</button>
                 </Link>
+                }
 
                 <Link to="/register">
                     <div className="flex items-center overflow-hidden h-15 w-43">
