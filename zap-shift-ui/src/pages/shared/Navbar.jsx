@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router';
 import { FaArrowCircleRight } from "react-icons/fa";
 import Logo from '../../components/logo/Logo';
 import useAuth from '../../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
     const {user, logOut} = useAuth();
@@ -11,9 +12,10 @@ const Navbar = () => {
         logOut()
             .then()
             .catch(error => {
-                console.log(error.message);
-            })
-    }
+                // console.log(error.message);
+                toast.error(error.message);
+            });
+    };
 
     const links = <>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/services">Services</NavLink></li>
