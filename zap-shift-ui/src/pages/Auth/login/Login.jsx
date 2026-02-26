@@ -41,8 +41,8 @@ const Login = () => {
                     <input type="email" className="input w-full rounded-xl" placeholder="Email" {...register("email", { required: true })} />
                     {errors.email?.type === "required" && <p className="text-red-500 font-bold text-medium">Email field is required</p>}
                     {/* Passowrd field */}
+                    <label className="label text-[16px]">Password</label>
                     <div className="relative">
-                        <label className="label text-[16px]">Password</label>
                         <input type={eye ? "text" : "password"} className="input w-full rounded-xl" placeholder="Password" {...register("password", {
                             required: true,
                             minLength: 6,
