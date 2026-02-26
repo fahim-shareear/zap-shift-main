@@ -19,7 +19,7 @@ const Banner = () => {
             emulateTouch={true}
             showStatus={false}
             showThumbs={false}
-            className='mt-5 rounded-xl overflow-hidden'
+            className='mt-30 rounded-xl overflow-hidden'
         >
             {images.map((img, index) => (
                 <div key={index} className="relative h-75 md:h-125 lg:h-150">

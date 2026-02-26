@@ -27,7 +27,7 @@ const Register = () => {
     const handleEye = (e) =>{
         e.preventDefault();
         setEye(!eye);
-    }
+    };
 
     return (
         <div className="max-w-4xl p-6 text-center">
@@ -41,6 +41,12 @@ const Register = () => {
                     <label className="label font-bold">Name</label>
                     <input type="text" className="input w-full rounded-xl" placeholder="Your Name Here" {...register("name", { required: true, maxLength: 20 })} />
                     {errors.name?.type === "required" && <p className='text-red-500'>Name is required</p>}
+
+                    {/* Photo field */}
+                    <label className="label font-bold">Provide Image</label>
+                    <input type="file" className="file border border-gray-300 py-3 px-2 text-[12px] text-gray-500 w-full rounded-xl text-center" placeholder="Upload your image here" {...register("image", { required: true})} />
+                    {errors.name?.type === "required" && <p className='text-red-500'>Image is required</p>}
+
                     {/* email field */}
                     <label className="label font-bold">Email</label>
                     <input type="email" className="input w-full rounded-xl" placeholder="Email" {...register("email", { required: true })} />
@@ -52,7 +58,7 @@ const Register = () => {
                         <input type={eye ? "text" : "password"} className="input text-[16px] w-full rounded-xl" placeholder="Password" {...register("password", { required: true, 
                             minLength: 6,
                             pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/ })} />
-                        <button className="absolute top-7 text-xl right-4" onClick={handleEye}>{eye ? <FaEyeSlash className="trnasition-all duration-150 ease-linear"></FaEyeSlash> : <FaEye></FaEye>}</button>
+                        <button className="absolute top-2 text-xl right-4" onClick={handleEye}>{eye ? <FaEyeSlash className="trnasition-all duration-150 ease-linear"></FaEyeSlash> : <FaEye></FaEye>}</button>
                         {errors.password?.type === 'required' && <p className="text-red-500">Password is required</p>}
                         {errors.password?.type === 'minLength' && <p className="text-red-500">Password must be at least 6 character or longer</p>}
                         {errors.password?.type === 'pattern' && <p className="text-red-500 py-1">Password must contain one capital letter one small letter and one special character</p>}

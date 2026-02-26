@@ -9,11 +9,11 @@ const AuthLayout = () => {
             <div className="w-40 pl-2">
                 <Logo></Logo>
             </div>
-            <div className="flex mt-10 md:flex-row flex-col-reverse">
+            <div className="flex mt-10 md:flex-row flex-col-reverse items-center justify-center">
                 <div className="flex-1 mt-15">
                     <Outlet></Outlet>
                 </div>
-                <div className="flex-1 mt-15 bg-[#caeb66] h-full">
+                <div className="flex-1 mt-15 h-full">
                     <img src={authimage} alt="authimage" className="h-full object-cover" />
                 </div>
             </div>

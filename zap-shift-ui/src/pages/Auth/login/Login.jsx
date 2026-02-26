@@ -48,7 +48,7 @@ const Login = () => {
                             minLength: 6,
                             pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/
                         })} />
-                        <button className="absolute top-8 right-4 font-bold text-xl" onClick={handleEye}>
+                        <button className="absolute top-2 right-4 font-bold text-xl" onClick={handleEye}>
                             {eye ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
                         </button>
                         {errors.password?.type === 'required' && <p className="text-red-500">Password field is required</p>}
