@@ -48,7 +48,7 @@ const Navbar = () => {
                 {
                     user ? <button onClick={closeAuth} className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner
                     border boreder-gray-500 text-primary font-bold px-3 py-3 w-25 text-center rounded-xl text-[15px]">Sign Out</button> : <Link to="/login">
-                    <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold px-3 py-3 w-25 text-center rounded-xl md:text-xl">Log In</button>
+                    <button className="text-sm cursor-pointer transition-all duration-150 active:scale-95 active:shadow-inner border border-gray-500 text-primary font-bold px-3 py-3 md:w-25 text-center rounded-xl md:text-xl">Log In</button>
                 </Link>
                 }
 

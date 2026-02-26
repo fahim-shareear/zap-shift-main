@@ -48,7 +48,7 @@ const Register = () => {
                     
                     <div className='relative'>
                         {/* Pasword Field */}
-                        <label className="label font-bold">Password</label>
+                        <label className="label font-bold text-left">Password</label>
                         <input type={eye ? "text" : "password"} className="input text-[16px] w-full rounded-xl" placeholder="Password" {...register("password", { required: true, 
                             minLength: 6,
                             pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/ })} />
