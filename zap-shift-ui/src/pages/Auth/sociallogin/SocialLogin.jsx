@@ -1,16 +1,18 @@
 import React from 'react';
 import useAuth from '../../../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 const SocialLogin = () => {
     const { popupLogin } = useAuth();
 
     const googleLogin = () =>{
         popupLogin()
-            .then(result => {
-                console.log(result.user);
+            .then(() => {
+                // console.log(result.user);
             })
             .catch(error => {
-                console.log(error.message);
+                toast.error(error.message);
+                return;
             });
     };
 
