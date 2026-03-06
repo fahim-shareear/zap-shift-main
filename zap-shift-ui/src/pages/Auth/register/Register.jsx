@@ -10,7 +10,6 @@ const Register = () => {
     const { register,
         handleSubmit,
         formState: { errors } } = useForm();
-
     const {registerUser} = useAuth();
 
     const handleRegister = (data) => {
@@ -44,7 +43,7 @@ const Register = () => {
 
                     {/* Photo field */}
                     <label className="label font-bold">Provide Image</label>
-                    <input type="file" className="file border border-gray-300 py-3 px-2 text-[12px] text-gray-500 w-full rounded-xl text-center" placeholder="Upload your image here" {...register("image", { required: true})} />
+                    <input type="file" className="file-input border border-gray-300 text-[12px] text-gray-500 w-full rounded-xl" placeholder="Upload your image here" {...register("image", { required: true})} />
                     {errors.name?.type === "required" && <p className='text-red-500'>Image is required</p>}
 
                     {/* email field */}
