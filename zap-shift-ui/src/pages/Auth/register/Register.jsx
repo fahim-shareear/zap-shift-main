@@ -1,25 +1,33 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../sociallogin/SocialLogin';
+import toast from 'react-hot-toast';
 
 const Register = () => {
     const [eye, setEye] = useState(false);
     const { register,
         handleSubmit,
         formState: { errors } } = useForm();
-    const {registerUser} = useAuth();
+    const {registerUser, loader} = useAuth();
+    const navigate = useNavigate();
 
     const handleRegister = (data) => {
         console.log(data);
         registerUser(data.email, data.password)
             .then(result => {
                 console.log(result.user);
+                toast.success(`Welcome ${data.name} to ZapShift!`);
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000)
             })
             .catch(error =>{
                 console.log(error);
+                toast.error(error.message);
+                return;
             });
     };
 
@@ -63,7 +71,7 @@ const Register = () => {
                         {errors.password?.type === 'pattern' && <p className="text-red-500 py-1">Password must contain one capital letter one small letter and one special character</p>}
                     </div>
 
-                    <button className="btn btn-secondary text-black mt-4 rounded-xl">Register</button>
+                    <button className="btn btn-secondary text-black mt-4 rounded-xl" onClick={loader}>Register</button>
                 </fieldset>
             </form>
             <div className="pl-3">
