@@ -6,10 +6,12 @@ import About from "../pages/about/About";
 import AuthLayout from "../layouts/AuthLayout";
 import Login from "../pages/Auth/login/Login";
 import Register from "../pages/Auth/register/Register";
+import ErrorElement from "../pages/shared/ErrorElement";
 
 const routes = createBrowserRouter([
     {
         path: '/', Component: RootLayout,
+        errorElement: <ErrorElement></ErrorElement>,
         hydrateFallbackElement: <h2>Loading.....</h2>,
         children: [
             {index: true, Component: Home},

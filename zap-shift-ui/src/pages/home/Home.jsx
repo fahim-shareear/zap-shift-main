@@ -8,7 +8,7 @@ import CustomerBanner from './CustomerBanner';
 import Feedback from './Feedback';
 import FrequesntAskedQuestion from './FrequesntAskedQuestion';
 
-const feedbackPromise = fetch('http://localhost:3000/feedback').then(res => res.json());
+// const feedbackPromise = fetch('http://localhost:3000/feedback').then(res => res.json());
 
 const Home = () => {
     return (
@@ -19,7 +19,7 @@ const Home = () => {
             <Swipper></Swipper>
             <Desclaimer></Desclaimer>
             <CustomerBanner></CustomerBanner>
-            <Feedback feedbackPromise={feedbackPromise}></Feedback>
+            {/* <Feedback feedbackPromise={feedbackPromise}></Feedback> */}
             <FrequesntAskedQuestion></FrequesntAskedQuestion>
         </div>
     );
