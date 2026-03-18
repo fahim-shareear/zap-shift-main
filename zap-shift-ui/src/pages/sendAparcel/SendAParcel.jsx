@@ -1,9 +1,10 @@
 import React from 'react';
+import ParcelForm from '../../components/ParcelForm';
 
 const SendAParcel = () => {
     return (
-        <div className="top-20 w-full h-screen">
-            <h1 className="">This page is for the form of sending a parcel</h1>
+        <div className="w-full h-screen">
+            <ParcelForm></ParcelForm>
         </div>
     );
 };

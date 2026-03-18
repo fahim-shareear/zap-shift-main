@@ -4,8 +4,11 @@ import { FaArrowCircleRight } from "react-icons/fa";
 import Logo from '../../components/logo/Logo';
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
+import useTime from '../../custonHooks/useTime';
 
 const Navbar = () => {
+    const showTime = useTime();
+    // console.log(showTime);
     const { user, logOut } = useAuth();
     const [menuState, setMenuState] = useState(false);
     // console.log(user);
@@ -35,7 +38,7 @@ const Navbar = () => {
     </>
 
     return (
-        <div className="navbar shadow-sm lg:max-w-7xl mx-auto rounded-xl bg-white fixed z-100 top-0">
+        <div className="navbar shadow-sm lg:max-w-7xl mx-auto rounded-xl bg-white">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -53,15 +56,18 @@ const Navbar = () => {
                 <ul className="menu menu-horizontal px-1">
                     {links}
                 </ul>
+                <div className="flex items-center justify-center m-3  w-30 h-6">
+                    <h3 className="text-[17px] text-primary font-bold">{showTime.toLocaleTimeString()}</h3>
+                </div>
             </div>
             <div className="navbar-end flex gap-4 sm:ml-10">
                 {
-                    user ? <div className="rounded-full w-10 h-10 border-red-500 border relative">
+                    user ? <div className="rounded-full w-10 h-10 relative">
                         <div className="w-full h-full rounded-full cursor-pointer" onClick={handleMenu}>
                             <img src={user.photoURL} alt="" className="w-full h-full object-cover rounded-full" />
                         </div>
                         <div className={`border-3 border-white grow bg-secondary rounded-md w-55 flex items-left justify-left
-                            flex-col absolute top-15 transition-all duration-400 origin-top ${menuState ? "opacity-100 visible" : "opcaity-0 invisible  transition-all duration-300"}`}>
+                            flex-col absolute top-15 transition-all duration-400 origin-top z-10 ${menuState ? "opacity-100 visible" : "opcaity-0 invisible  transition-all duration-300"}`}>
                             <div className='w-40 p-5'>
                                 <h3 className="font-bold text-white">{user.displayName}</h3>
                                 <h3 className="font-medium text-white">{user.email}</h3>
