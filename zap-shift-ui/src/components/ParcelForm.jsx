@@ -42,7 +42,7 @@ const ParcelForm = () => {
                     {/* parcel info: name, weight */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 my-8">
                         <fieldset className="fieldset">
-                            <label className="label">Parcel Name</label>
+                            <label className="label text-[15px]">Parcel Name</label>
                             <input type="text"
                                 className="input w-full"
                                 placeholder="Parcel Name"
@@ -50,7 +50,7 @@ const ParcelForm = () => {
                         </fieldset>
 
                         <fieldset className="fieldset">
-                            <label className="label">Parcel Weight (kg)</label>
+                            <label className="label text-[15px]">Parcel Weight (kg)</label>
                             <input type="number"
                                 className="input w-full"
                                 placeholder="Parcel Weight"
@@ -64,21 +64,21 @@ const ParcelForm = () => {
 
                         <h4 className="text-2xl font-semibold text-primary">Sender Info</h4>
                         <fieldset className="fieldset">
-                            <label className="label text-bold text-primary">Sender Name</label>
+                            <label className="label text-bold text-primary text-[15px]">Sender Name</label>
                             <input type="text"
                                 className="input w-full"
                                 placeholder="Sender Name"
                                 {...register('senderName')} />
 
                             {/* sender address */}
-                            <label className="label mt-4 text-bold text-primary">Sender Address</label>
+                            <label className="label mt-4 text-bold text-primary text-[15px]">Sender Address</label>
                             <input type="text"
                                 className="input w-full"
                                 placeholder="Sender address"
                                 {...register('senderAddress')} />
 
                             {/* sender phone number */}
-                            <label className="label mt-4 text-bold text-primary">Sender Phone No</label>
+                            <label className="label mt-4 text-bold text-primary text-[15px]">Sender Phone No</label>
                             <input type="text"
                                 className="input w-full"
                                 placeholder="Sender Phone No"
@@ -90,7 +90,7 @@ const ParcelForm = () => {
                         <div></div>
                     </div>
 
-                    <input type="submit" className="btn btn-secondary text-primary" value="Submit" />
+                    <input type="submit" className="btn btn-secondary text-primary my-3" value="Submit" />
                 </form>
             </div>
         </div>

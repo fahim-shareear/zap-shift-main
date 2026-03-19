@@ -63,7 +63,7 @@ const Navbar = () => {
             <div className="navbar-end flex gap-4 sm:ml-10">
                 {
                     user ? <div className="rounded-full w-10 h-10 relative">
-                        <div className="w-full h-full rounded-full cursor-pointer" onClick={handleMenu}>
+                        <div className="w-full h-full rounded-full cursor-pointer border-3 border-secondary  transition transform active:scale-95" onClick={handleMenu}>
                             <img src={user.photoURL} alt="" className="w-full h-full object-cover rounded-full" />
                         </div>
                         <div className={`border-3 border-white grow bg-secondary rounded-md w-55 flex items-left justify-left
@@ -75,7 +75,7 @@ const Navbar = () => {
                                     <li className="font-medium text-white cursor-pointer"><Link to="/dashboard">Dashboard</Link></li>
                                     <li className="font-medium text-white cursor-pointer"><Link to="/edit-profile">Edit Profile</Link></li>
                                 </ul>
-                                <button className="border border-white rounded-md font-bold p-2 mt-4 text-white hover:bg-secondary hover:text-primary cursor-pointer transition-all duration-300"
+                                <button className="border border-white rounded-md font-bold p-2 mt-4 text-white hover:bg-secondary hover:text-primary cursor-pointer duration-300  transition transform active:scale-95"
                                 onClick={closeAuth}>
                                     Sign Out
                                 </button>
