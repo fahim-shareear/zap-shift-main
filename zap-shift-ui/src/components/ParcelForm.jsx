@@ -5,6 +5,71 @@ import useClickAnimation from '../custonHooks/useClickAnimation';
 const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
     const { handleSubmit, register, formState: { errors } } = useForm();
+    const districts = [
+  "Bagerhat",
+  "Bandarban",
+  "Barguna",
+  "Barisal",
+  "Bhola",
+  "Bogra",
+  "Brahmanbaria",
+  "Chandpur",
+  "Chattogram",
+  "Chuadanga",
+  "Cox's Bazar",
+  "Cumilla",
+  "Dhaka",
+  "Dinajpur",
+  "Faridpur",
+  "Feni",
+  "Gaibandha",
+  "Gazipur",
+  "Gopalganj",
+  "Habiganj",
+  "Jamalpur",
+  "Jashore",
+  "Jhalokathi",
+  "Jhenaidah",
+  "Joypurhat",
+  "Khagrachari",
+  "Khulna",
+  "Kishoreganj",
+  "Kurigram",
+  "Kushtia",
+  "Lakshmipur",
+  "Lalmonirhat",
+  "Madaripur",
+  "Magura",
+  "Manikganj",
+  "Meherpur",
+  "Moulvibazar",
+  "Munshiganj",
+  "Mymensingh",
+  "Naogaon",
+  "Narail",
+  "Narayanganj",
+  "Narsingdi",
+  "Natore",
+  "Netrokona",
+  "Nilphamari",
+  "Noakhali",
+  "Pabna",
+  "Panchagarh",
+  "Patuakhali",
+  "Pirojpur",
+  "Rajbari",
+  "Rajshahi",
+  "Rangamati",
+  "Rangpur",
+  "Satkhira",
+  "Shariatpur",
+  "Sherpur",
+  "Sirajganj",
+  "Sunamganj",
+  "Sylhet",
+  "Tangail",
+  "Thakurgaon"
+];
 
     const handleSendParcel = (data) => {
         console.log(data);
@@ -44,7 +109,7 @@ const ParcelForm = () => {
                     {/* parcel info: name, weight */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 my-8">
                         <fieldset className="fieldset">
-                            <label className="label text-[15px]">Parcel Name</label>
+                            <label className="label text-[15px]">Parcel Name <span className="text-red-500 text-[18px]">*</span></label>
                             <input type="text"
                                 className="input w-full"
                                 placeholder="Parcel Name"
@@ -52,7 +117,7 @@ const ParcelForm = () => {
                         </fieldset>
 
                         <fieldset className="fieldset">
-                            <label className="label text-[15px]">Parcel Weight (kg)</label>
+                            <label className="label text-[15px]">Parcel Weight (kg) <span className="text-red-500 text-[18px]">*</span></label>
                             <input type="number"
                                 className="input w-full"
                                 placeholder="Parcel Weight"
@@ -62,30 +127,46 @@ const ParcelForm = () => {
 
                     {/* two column */}
                     <div>
-                        {/* sender info */}
+                        <div>
+                            {/* sender info */}
 
-                        <h4 className="text-2xl font-semibold text-primary">Sender Info</h4>
-                        <fieldset className="fieldset">
-                            <label className="label text-bold text-primary text-[15px]">Sender Name</label>
-                            <input type="text"
-                                className="input w-full"
-                                placeholder="Sender Name"
-                                {...register('senderName')} />
+                            <h4 className="text-2xl font-semibold text-primary">Sender Info <span className="text-red-500 text-[18px]">*</span></h4>
+                            <fieldset className="fieldset">
+                                <label className="label text-bold text-primary text-[15px]">Sender Name <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="text"
+                                    className="input w-full"
+                                    placeholder="Sender Name"
+                                    {...register('senderName')} />
 
-                            {/* sender address */}
-                            <label className="label mt-4 text-bold text-primary text-[15px]">Sender Address</label>
-                            <input type="text"
-                                className="input w-full"
-                                placeholder="Sender address"
-                                {...register('senderAddress')} />
+                                {/* sender address */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender Address <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="text"
+                                    className="input w-full"
+                                    placeholder="Sender address"
+                                    {...register('senderAddress')} />
 
-                            {/* sender phone number */}
-                            <label className="label mt-4 text-bold text-primary text-[15px]">Sender Phone No</label>
-                            <input type="text"
-                                className="input w-full"
-                                placeholder="Sender Phone No"
-                                {...register('senderPhone')} />
-                        </fieldset>
+                                {/* sender phone number */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender Phone No <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="text"
+                                    className="input w-full"
+                                    placeholder="Sender Phone No"
+                                    {...register('senderPhone')} />
+
+
+                                {/* sender district */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender District <span className="text-red-500 text-[18px]">*</span></label>
+                                <select defaultValue="Medium" className="select select-md w-full" {...register('senderDistrict')}>
+                                    <option disabled={true}>Select District</option>
+                                    {
+                                        districts.map((district, index) => (
+                                            <option key={index} value={district}>
+                                                {district}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                            </fieldset>
+                        </div>
 
 
                         {/* receiver info */}
