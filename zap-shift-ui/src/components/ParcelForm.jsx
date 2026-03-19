@@ -1,7 +1,9 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
+import useClickAnimation from '../custonHooks/useClickAnimation';
 
 const ParcelForm = () => {
+    const { isClicked, enevtHandlers } = useClickAnimation();
     const { handleSubmit, register, formState: { errors } } = useForm();
 
     const handleSendParcel = (data) => {
@@ -90,7 +92,9 @@ const ParcelForm = () => {
                         <div></div>
                     </div>
 
-                    <input type="submit" className="btn btn-secondary text-primary my-3" value="Submit" />
+                    <input type="submit"
+                        {...enevtHandlers}
+                        className={`btn btn-secondary text-primary my-3 value="Submit transition-all duration-150 transform ${isClicked ? "scale-95" : "scale-100"}`} />
                 </form>
             </div>
         </div>
