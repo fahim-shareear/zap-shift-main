@@ -6,70 +6,70 @@ const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
     const { handleSubmit, register, formState: { errors } } = useForm();
     const districts = [
-  "Bagerhat",
-  "Bandarban",
-  "Barguna",
-  "Barisal",
-  "Bhola",
-  "Bogra",
-  "Brahmanbaria",
-  "Chandpur",
-  "Chattogram",
-  "Chuadanga",
-  "Cox's Bazar",
-  "Cumilla",
-  "Dhaka",
-  "Dinajpur",
-  "Faridpur",
-  "Feni",
-  "Gaibandha",
-  "Gazipur",
-  "Gopalganj",
-  "Habiganj",
-  "Jamalpur",
-  "Jashore",
-  "Jhalokathi",
-  "Jhenaidah",
-  "Joypurhat",
-  "Khagrachari",
-  "Khulna",
-  "Kishoreganj",
-  "Kurigram",
-  "Kushtia",
-  "Lakshmipur",
-  "Lalmonirhat",
-  "Madaripur",
-  "Magura",
-  "Manikganj",
-  "Meherpur",
-  "Moulvibazar",
-  "Munshiganj",
-  "Mymensingh",
-  "Naogaon",
-  "Narail",
-  "Narayanganj",
-  "Narsingdi",
-  "Natore",
-  "Netrokona",
-  "Nilphamari",
-  "Noakhali",
-  "Pabna",
-  "Panchagarh",
-  "Patuakhali",
-  "Pirojpur",
-  "Rajbari",
-  "Rajshahi",
-  "Rangamati",
-  "Rangpur",
-  "Satkhira",
-  "Shariatpur",
-  "Sherpur",
-  "Sirajganj",
-  "Sunamganj",
-  "Sylhet",
-  "Tangail",
-  "Thakurgaon"
-];
+        "Bagerhat",
+        "Bandarban",
+        "Barguna",
+        "Barisal",
+        "Bhola",
+        "Bogra",
+        "Brahmanbaria",
+        "Chandpur",
+        "Chattogram",
+        "Chuadanga",
+        "Cox's Bazar",
+        "Cumilla",
+        "Dhaka",
+        "Dinajpur",
+        "Faridpur",
+        "Feni",
+        "Gaibandha",
+        "Gazipur",
+        "Gopalganj",
+        "Habiganj",
+        "Jamalpur",
+        "Jashore",
+        "Jhalokathi",
+        "Jhenaidah",
+        "Joypurhat",
+        "Khagrachari",
+        "Khulna",
+        "Kishoreganj",
+        "Kurigram",
+        "Kushtia",
+        "Lakshmipur",
+        "Lalmonirhat",
+        "Madaripur",
+        "Magura",
+        "Manikganj",
+        "Meherpur",
+        "Moulvibazar",
+        "Munshiganj",
+        "Mymensingh",
+        "Naogaon",
+        "Narail",
+        "Narayanganj",
+        "Narsingdi",
+        "Natore",
+        "Netrokona",
+        "Nilphamari",
+        "Noakhali",
+        "Pabna",
+        "Panchagarh",
+        "Patuakhali",
+        "Pirojpur",
+        "Rajbari",
+        "Rajshahi",
+        "Rangamati",
+        "Rangpur",
+        "Satkhira",
+        "Shariatpur",
+        "Sherpur",
+        "Sirajganj",
+        "Sunamganj",
+        "Sylhet",
+        "Tangail",
+        "Thakurgaon"
+    ];
 
     const handleSendParcel = (data) => {
         console.log(data);
@@ -126,7 +126,7 @@ const ParcelForm = () => {
                     </div>
 
                     {/* two column */}
-                    <div>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-15'>
                         <div>
                             {/* sender info */}
 
@@ -136,26 +136,26 @@ const ParcelForm = () => {
                                 <input type="text"
                                     className="input w-full"
                                     placeholder="Sender Name"
-                                    {...register('senderName')} />
+                                    {...register('senderName', { required: true })} />
 
                                 {/* sender address */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Address <span className="text-red-500 text-[18px]">*</span></label>
                                 <input type="text"
                                     className="input w-full"
                                     placeholder="Sender address"
-                                    {...register('senderAddress')} />
+                                    {...register('senderAddress', { required: true })} />
 
                                 {/* sender phone number */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Phone No <span className="text-red-500 text-[18px]">*</span></label>
                                 <input type="text"
                                     className="input w-full"
                                     placeholder="Sender Phone No"
-                                    {...register('senderPhone')} />
+                                    {...register('senderPhone', { required: true })} />
 
 
                                 {/* sender district */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender District <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Medium" className="select select-md w-full" {...register('senderDistrict')}>
+                                <select defaultValue="Medium" className="select select-md w-full" {...register('senderDistrict', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
                                         districts.map((district, index) => (
@@ -165,17 +165,70 @@ const ParcelForm = () => {
                                         ))
                                     }
                                 </select>
+
+                                <div className="flex flex-col gap-3">
+                                    {/* text aread */}
+                                    <label className="label mt-4 text-bold text-primary text-[15px]">Pickup Instructions here <span className="text-red-500 text-[18px]">*</span></label>
+                                    <textarea placeholder="Pickup Instructions here" className="w-full textarea textarea-md"></textarea>
+                                </div>
                             </fieldset>
                         </div>
 
 
-                        {/* receiver info */}
-                        <div></div>
+                        <div>
+                            {/* receiver info */}
+
+                            <h4 className="text-2xl font-semibold text-primary">Receiver Info <span className="text-red-500 text-[18px]">*</span></h4>
+                            <fieldset className="fieldset">
+                                <label className="label text-bold text-primary text-[15px]">Receiver Name <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="text"
+                                    className="input w-full"
+                                    placeholder="Receiver Name"
+                                    {...register('ReceiverName', { required: true })} />
+
+                                {/* sender address */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Address <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="text"
+                                    className="input w-full"
+                                    placeholder="Receiver address"
+                                    {...register('receiverAddress', { required: true })} />
+
+                                {/* sender phone number */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Phone No <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="text"
+                                    className="input w-full"
+                                    placeholder="Receiver Phone No"
+                                    {...register('receiverPhone', { required: true })} />
+
+
+                                {/* sender district */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Receiver District <span className="text-red-500 text-[18px]">*</span></label>
+                                <select defaultValue="Medium" className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
+                                    <option disabled={true}>Select District</option>
+                                    {
+                                        districts.map((district, index) => (
+                                            <option key={index} value={district}>
+                                                {district}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+
+                                <div className="flex flex-col gap-3">
+                                    {/* text aread */}
+                                    <label className="label mt-4 text-bold text-primary text-[15px]">Delivery Instructions here <span className="text-red-500 text-[18px]">*</span></label>
+                                    <textarea placeholder="Pickup Instructions here" className="w-full textarea textarea-md"></textarea>
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
 
+                    <h3 className="font-bold text-[16px] text-red-500 my-3"><span>*</span> Pickup Time 4pm-7pm Approx</h3>
                     <input type="submit"
                         {...enevtHandlers}
-                        className={`btn btn-secondary text-primary my-3 value="Submit transition-all duration-150 transform ${isClicked ? "scale-95" : "scale-100"}`} />
+                        value="Proceed to confirm Booking"
+                        className={`btn btn-secondary text-primary my-3 transition-all duration-150 transform ${isClicked ? "scale-95" : "scale-100"}`}
+                        />
                 </form>
             </div>
         </div>
