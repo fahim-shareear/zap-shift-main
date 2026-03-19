@@ -73,7 +73,7 @@ const ParcelForm = () => {
 
     const handleSendParcel = (data) => {
         console.log(data);
-    }
+    };
 
     return (
         <div className="w-full rounded-md my-8 shadow-md text-black grow">
@@ -92,7 +92,8 @@ const ParcelForm = () => {
                                 value="document"
                                 className="radio"
                                 defaultChecked
-                                {...register('parcelType')} />
+                                {...register('parcelType', {required: true})} />
+                                
                             Document
                         </label>
 
@@ -104,6 +105,7 @@ const ParcelForm = () => {
                                 {...register('parcelType')} />
                             Non-Document
                         </label>
+                        {errors.parcelType?.type === 'required' && <p className='text-[16px] text-red-500 font-semi-bold'>Must select the parcel type.</p>}
                     </div>
 
                     {/* parcel info: name, weight */}
@@ -113,7 +115,8 @@ const ParcelForm = () => {
                             <input type="text"
                                 className="input w-full"
                                 placeholder="Parcel Name"
-                                {...register('parcelName')} />
+                                {...register('parcelName', {required: true})} />
+                                {errors.parcelName?.type === 'parcelName' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
                         </fieldset>
 
                         <fieldset className="fieldset">
@@ -121,7 +124,8 @@ const ParcelForm = () => {
                             <input type="number"
                                 className="input w-full"
                                 placeholder="Parcel Weight"
-                                {...register('parcelWeight')} />
+                                {...register('parcelWeight', {required: true})} />
+                                {errors.parcelWeigh?.type === 'required' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
                         </fieldset>
                     </div>
 
@@ -130,13 +134,14 @@ const ParcelForm = () => {
                         <div>
                             {/* sender info */}
 
-                            <h4 className="text-2xl font-semibold text-primary">Sender Info <span className="text-red-500 text-[18px]">*</span></h4>
+                            <h4 className="text-2xl font-semibold text-primary">Sender Info</h4>
                             <fieldset className="fieldset">
                                 <label className="label text-bold text-primary text-[15px]">Sender Name <span className="text-red-500 text-[18px]">*</span></label>
                                 <input type="text"
                                     className="input w-full"
                                     placeholder="Sender Name"
                                     {...register('senderName', { required: true })} />
+                                    {errors.senderName?.type === "required" && <p className="text-[16px] font-semibold text-red-500">Sender name field can't be empty.</p>}
 
                                 {/* sender address */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Address <span className="text-red-500 text-[18px]">*</span></label>
@@ -144,6 +149,7 @@ const ParcelForm = () => {
                                     className="input w-full"
                                     placeholder="Sender address"
                                     {...register('senderAddress', { required: true })} />
+                                    {errors.senderAddress?.type === 'required' && <p className="text-[16px] font-semibold text-red-500">Sender address is a must</p>}
 
                                 {/* sender phone number */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Phone No <span className="text-red-500 text-[18px]">*</span></label>
@@ -151,11 +157,12 @@ const ParcelForm = () => {
                                     className="input w-full"
                                     placeholder="Sender Phone No"
                                     {...register('senderPhone', { required: true })} />
+                                    {errors.senderPhone?.type === "senderPhone" && <p className='font-semibold text-[16px] text-red-500'>Sender Contact number must be included</p>}
 
 
                                 {/* sender district */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender District <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Medium" className="select select-md w-full" {...register('senderDistrict', { required: true })}>
+                                <select defaultValue="" className="select select-md w-full" {...register('senderDistrict', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
                                         districts.map((district, index) => (
@@ -165,11 +172,12 @@ const ParcelForm = () => {
                                         ))
                                     }
                                 </select>
+                                {errors.senderDistrict?.type === "required" && <p className="font-semibold text-[16px] text-red-500">Please select your district</p>}
 
                                 <div className="flex flex-col gap-3">
                                     {/* text aread */}
                                     <label className="label mt-4 text-bold text-primary text-[15px]">Pickup Instructions here <span className="text-red-500 text-[18px]">*</span></label>
-                                    <textarea placeholder="Pickup Instructions here" className="w-full textarea textarea-md"></textarea>
+                                    <textarea placeholder="Pickup Instructions here" className="w-full textarea textarea-md" {...register('pickupInstruction')}></textarea>
                                 </div>
                             </fieldset>
                         </div>
@@ -178,13 +186,14 @@ const ParcelForm = () => {
                         <div>
                             {/* receiver info */}
 
-                            <h4 className="text-2xl font-semibold text-primary">Receiver Info <span className="text-red-500 text-[18px]">*</span></h4>
+                            <h4 className="text-2xl font-semibold text-primary">Receiver Info</h4>
                             <fieldset className="fieldset">
                                 <label className="label text-bold text-primary text-[15px]">Receiver Name <span className="text-red-500 text-[18px]">*</span></label>
                                 <input type="text"
                                     className="input w-full"
                                     placeholder="Receiver Name"
-                                    {...register('ReceiverName', { required: true })} />
+                                    {...register('receiverName', { required: true })} />
+                                    {errors.receiverName?.type === 'required' && <p className="font-semibold text-[16px] text-red-500">Please enter the recepients name</p>}
 
                                 {/* sender address */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Address <span className="text-red-500 text-[18px]">*</span></label>
@@ -192,6 +201,7 @@ const ParcelForm = () => {
                                     className="input w-full"
                                     placeholder="Receiver address"
                                     {...register('receiverAddress', { required: true })} />
+                                    {errors.receiverAddress?.type === "required" && <p className="font-semibold, text-[16px] text-red-500">Receipient's address must be provided</p>}
 
                                 {/* sender phone number */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Phone No <span className="text-red-500 text-[18px]">*</span></label>
@@ -199,11 +209,12 @@ const ParcelForm = () => {
                                     className="input w-full"
                                     placeholder="Receiver Phone No"
                                     {...register('receiverPhone', { required: true })} />
+                                    {errors.receiverPhone?.type === 'required' && <p className="text-red-500 text-[16px] font-semibold">Please enter receivers contact number</p>}
 
 
                                 {/* sender district */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver District <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Medium" className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
+                                <select defaultValue="" className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
                                         districts.map((district, index) => (
@@ -213,11 +224,12 @@ const ParcelForm = () => {
                                         ))
                                     }
                                 </select>
+                                {errors.receiverDistrict?.type === 'required' && <p className='text-[16px] text-red-500 font-semibold'>Please select the receivers Dsitrict</p>}
 
                                 <div className="flex flex-col gap-3">
                                     {/* text aread */}
                                     <label className="label mt-4 text-bold text-primary text-[15px]">Delivery Instructions here <span className="text-red-500 text-[18px]">*</span></label>
-                                    <textarea placeholder="Pickup Instructions here" className="w-full textarea textarea-md"></textarea>
+                                    <textarea placeholder="Pickup Instructions here" className="w-full textarea textarea-md" {...register('deliveryInstruction')}></textarea>
                                 </div>
                             </fieldset>
                         </div>

@@ -26,6 +26,7 @@ async function run(){
         const userMain = client.db("zapShift");
         const usersCollection = userMain.collection("users");
         const feedback = userMain.collection("feedback");
+        const districtCollection = userMain.collection("districts");
 
         //getting all the users api:
         app.get("/users", async(req, res)=>{
@@ -45,6 +46,13 @@ async function run(){
         app.get("/feedback", async(req, res)=>{
             const cursor = feedback.find();
             const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        //getting the districts:
+        app.get("/districts", async(req, res)=>{
+            const cursor = districts.find();
+            const result = await cursor.toArrya();
             res.send(result);
         });
 
