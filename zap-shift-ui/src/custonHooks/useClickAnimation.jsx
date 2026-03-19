@@ -5,14 +5,17 @@ const useClickAnimation = () => {
     const handleMouseDown = () =>{
         setIsClicked(true);
     };
+
     const handleMouseUp = () =>{
-        setTimeout(() => setIsClicked(false), 150);
+        setTimeout(() =>{
+            setIsClicked(false)
+        }, 150);
     };
 
 
     return {
         isClicked,
-        enevtHandlers :{
+        eventHandlers: {
             onMouseDown: handleMouseDown,
             onMouseUp: handleMouseUp,
             onMouseLeave: handleMouseUp,
