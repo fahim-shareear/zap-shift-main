@@ -49,12 +49,7 @@ async function run(){
             res.send(result);
         });
 
-        //getting the districts:
-        app.get("/districts", async(req, res)=>{
-            const cursor = districts.find();
-            const result = await cursor.toArrya();
-            res.send(result);
-        });
+        
 
         await client.db("admin").command({ping: 1});
         console.log("Pinged the mondoDB server. It is connected")
