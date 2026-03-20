@@ -23,6 +23,7 @@ const ParcelForm = () => {
 
     const handleSendParcel = (data) => {
         console.log(data);
+        
     };
 
     return (
@@ -110,8 +111,8 @@ const ParcelForm = () => {
 
                                 {/* sender region */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Pick a Region" className="select select-md w-full" {...register('senderRegion', { required: true })}>
-                                    <option disabled={true} selected>Select Region</option>
+                                <select  className="select select-md w-full" {...register('senderRegion', { required: true })}>
+                                    <option disabled={true} defaultValue="Pick a Region">Select Region</option>
                                     {
                                         regions.map((r, index) => (
                                             <option key={index} value={r}>
@@ -124,8 +125,8 @@ const ParcelForm = () => {
 
                                 {/* Sender district */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Pick a district" className="select select-md w-full" {...register('senderDistrict', { required: true })}>
-                                    <option disabled={true} selected>Select District</option>
+                                <select  className="select select-md w-full" {...register('senderDistrict', { required: true })}>
+                                    <option disabled={true} defaultValue="Pick a district">Select District</option>
                                     {
                                         districtsByRegion(senderRegion).map((r, index) => (
                                             <option key={index} value={r}>
@@ -176,8 +177,8 @@ const ParcelForm = () => {
 
                                 {/* receiver Regions */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Select Region" className="select select-md w-full" {...register('receiverRegion', { required: true })}>
-                                    <option disabled={true} selected>Select District</option>
+                                <select  className="select select-md w-full" {...register('receiverRegion', { required: true })}>
+                                    <option disabled={true} defaultValue="Select Region">Select District</option>
                                     {
                                         regions.map((r, index) => (
                                             <option key={index} value={r}>
@@ -190,8 +191,8 @@ const ParcelForm = () => {
 
                                 {/* Receiver District */}
                                  <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="Select Region" className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
-                                    <option disabled={true} selected>Select District</option>
+                                <select  className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
+                                    <option disabled={true} defaultValue="Select Region">Select District</option>
                                     {
                                         districtsByRegion(receiverRegion).map((r, index) => (
                                             <option key={index} value={r}>
