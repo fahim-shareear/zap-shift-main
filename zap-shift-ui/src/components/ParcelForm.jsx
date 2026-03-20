@@ -5,11 +5,21 @@ import { useLoaderData } from 'react-router';
 
 const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
-    const { handleSubmit, register, formState: { errors } } = useForm();
+    const { handleSubmit, register, watch, formState: { errors } } = useForm();
     const serviceCenters = useLoaderData();
     const regionsDuplicate = serviceCenters.map(c => c.region);
     const regions = [... new Set(regionsDuplicate)];
-    // console.log(regions);
+    const senderRegion = watch('senderRegion');
+    const receiverRegion = watch('receiverRegion');
+
+
+    const districtsByRegion = region =>{
+        if(!region) return [];
+        const regionDistricts = serviceCenters.filter(c => c.region === region);
+        const districts = regionDistricts.map(d => d.district);
+        return districts;
+    };
+    console.log(districtsByRegion(senderRegion));
     
 
     const handleSendParcel = (data) => {
@@ -101,14 +111,28 @@ const ParcelForm = () => {
                                     {errors.senderPhone?.type === "senderPhone" && <p className='font-semibold text-[16px] text-red-500'>Sender Contact number must be included</p>}
 
 
-                                {/* sender district */}
+                                {/* sender region */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
                                 <select defaultValue="" className="select select-md w-full" {...register('senderRegion', { required: true })}>
+                                    <option disabled={true}>Select Region</option>
+                                    {
+                                        regions.map((r, index) => (
+                                            <option key={index} value={r}>
+                                                {r}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                {errors.senderRegion?.type === "required" && <p className="font-semibold text-[16px] text-red-500">Please select your Region</p>}
+
+                                {/* Sender district */}
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
+                                <select defaultValue="" className="select select-md w-full" {...register('senderDistrict', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
-                                        regions.map((district, index) => (
-                                            <option key={index} value={district}>
-                                                {district}
+                                        districtsByRegion(senderRegion).map((r, index) => (
+                                            <option key={index} value={r}>
+                                                {r}
                                             </option>
                                         ))
                                     }
@@ -153,19 +177,33 @@ const ParcelForm = () => {
                                     {errors.receiverPhone?.type === 'required' && <p className="text-red-500 text-[16px] font-semibold">Please enter receivers contact number</p>}
 
 
-                                {/* sender district */}
+                                {/* receiver Regions */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
                                 <select defaultValue="Select Region" className="select select-md w-full" {...register('receiverRegion', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
-                                        regions.map((district, index) => (
-                                            <option key={index} value={district}>
-                                                {district}
+                                        regions.map((r, index) => (
+                                            <option key={index} value={r}>
+                                                {r}
                                             </option>
                                         ))
                                     }
                                 </select>
-                                {errors.receiverDistrict?.type === 'required' && <p className='text-[16px] text-red-500 font-semibold'>Please select the receivers Dsitrict</p>}
+                                {errors.receiverRegion?.type === 'required' && <p className='text-[16px] text-red-500 font-semibold'>Please select the receivers Dsitrict</p>}
+
+                                {/* Receiver District */}
+                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
+                                <select defaultValue="Select Region" className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
+                                    <option disabled={true}>Select District</option>
+                                    {
+                                        districtsByRegion(receiverRegion).map((r, index) => (
+                                            <option key={index} value={r}>
+                                                {r}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                {errors.receiverRegion?.type === 'required' && <p className='text-[16px] text-red-500 font-semibold'>Please select the receivers Dsitrict</p>}
 
                                 <div className="flex flex-col gap-3">
                                     {/* text aread */}
