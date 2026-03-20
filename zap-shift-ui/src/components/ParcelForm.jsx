@@ -1,17 +1,16 @@
 import React from 'react';
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import useClickAnimation from '../custonHooks/useClickAnimation';
 import { useLoaderData } from 'react-router';
 
 const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
-    const { handleSubmit, register, watch, formState: { errors } } = useForm();
+    const { handleSubmit, register, control,  formState: { errors } } = useForm();
     const serviceCenters = useLoaderData();
     const regionsDuplicate = serviceCenters.map(c => c.region);
     const regions = [... new Set(regionsDuplicate)];
-    // eslint-disable-next-line react-hooks/incompatible-library
-    const senderRegion = watch('senderRegion');
-    const receiverRegion = watch('receiverRegion');
+    const senderRegion = useWatch({control, name:'senderRegion'});
+    const receiverRegion = useWatch({control, name:'receiverRegion'});
 
 
     const districtsByRegion = region =>{
