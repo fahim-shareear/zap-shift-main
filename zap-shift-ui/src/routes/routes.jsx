@@ -21,7 +21,9 @@ const routes = createBrowserRouter([
                 loader: () => fetch("/serviceCenter.json").then(res => res.json())
             },
             {path: "about-us", Component: About},
-            {path: "send-a-parcel", element: <PrivateRoutes><SendAParcel></SendAParcel></PrivateRoutes>}
+            {path: "send-a-parcel", element: <PrivateRoutes><SendAParcel></SendAParcel></PrivateRoutes>,
+                loader: () => fetch("/serviceCenter.json").then(res => res.json())
+            }
         ]
     },
     {

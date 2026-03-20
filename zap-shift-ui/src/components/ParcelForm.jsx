@@ -1,75 +1,16 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import useClickAnimation from '../custonHooks/useClickAnimation';
+import { useLoaderData } from 'react-router';
 
 const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
     const { handleSubmit, register, formState: { errors } } = useForm();
-    const districts = [
-        "Bagerhat",
-        "Bandarban",
-        "Barguna",
-        "Barisal",
-        "Bhola",
-        "Bogra",
-        "Brahmanbaria",
-        "Chandpur",
-        "Chattogram",
-        "Chuadanga",
-        "Cox's Bazar",
-        "Cumilla",
-        "Dhaka",
-        "Dinajpur",
-        "Faridpur",
-        "Feni",
-        "Gaibandha",
-        "Gazipur",
-        "Gopalganj",
-        "Habiganj",
-        "Jamalpur",
-        "Jashore",
-        "Jhalokathi",
-        "Jhenaidah",
-        "Joypurhat",
-        "Khagrachari",
-        "Khulna",
-        "Kishoreganj",
-        "Kurigram",
-        "Kushtia",
-        "Lakshmipur",
-        "Lalmonirhat",
-        "Madaripur",
-        "Magura",
-        "Manikganj",
-        "Meherpur",
-        "Moulvibazar",
-        "Munshiganj",
-        "Mymensingh",
-        "Naogaon",
-        "Narail",
-        "Narayanganj",
-        "Narsingdi",
-        "Natore",
-        "Netrokona",
-        "Nilphamari",
-        "Noakhali",
-        "Pabna",
-        "Panchagarh",
-        "Patuakhali",
-        "Pirojpur",
-        "Rajbari",
-        "Rajshahi",
-        "Rangamati",
-        "Rangpur",
-        "Satkhira",
-        "Shariatpur",
-        "Sherpur",
-        "Sirajganj",
-        "Sunamganj",
-        "Sylhet",
-        "Tangail",
-        "Thakurgaon"
-    ];
+    const serviceCenters = useLoaderData();
+    const regionsDuplicate = serviceCenters.map(c => c.region);
+    const regions = [... new Set(regionsDuplicate)];
+    // console.log(regions);
+    
 
     const handleSendParcel = (data) => {
         console.log(data);
@@ -161,11 +102,11 @@ const ParcelForm = () => {
 
 
                                 {/* sender district */}
-                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender District <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="" className="select select-md w-full" {...register('senderDistrict', { required: true })}>
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
+                                <select defaultValue="" className="select select-md w-full" {...register('senderRegion', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
-                                        districts.map((district, index) => (
+                                        regions.map((district, index) => (
                                             <option key={index} value={district}>
                                                 {district}
                                             </option>
@@ -213,11 +154,11 @@ const ParcelForm = () => {
 
 
                                 {/* sender district */}
-                                <label className="label mt-4 text-bold text-primary text-[15px]">Receiver District <span className="text-red-500 text-[18px]">*</span></label>
-                                <select defaultValue="" className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
+                                <select defaultValue="Select Region" className="select select-md w-full" {...register('receiverRegion', { required: true })}>
                                     <option disabled={true}>Select District</option>
                                     {
-                                        districts.map((district, index) => (
+                                        regions.map((district, index) => (
                                             <option key={index} value={district}>
                                                 {district}
                                             </option>
