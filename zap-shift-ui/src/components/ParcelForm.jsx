@@ -43,8 +43,7 @@ const ParcelForm = () => {
                                 value="document"
                                 className="radio"
                                 defaultChecked
-                                {...register('parcelType', {required: true})} />
-                                
+                                {...register('parcelType', {required: true})} /> 
                             Document
                         </label>
 
@@ -84,7 +83,6 @@ const ParcelForm = () => {
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-15'>
                         <div>
                             {/* sender info */}
-
                             <h4 className="text-2xl font-semibold text-primary">Sender Info</h4>
                             <fieldset className="fieldset">
                                 <label className="label text-bold text-primary text-[15px]">Sender Name <span className="text-red-500 text-[18px]">*</span></label>
