@@ -20,7 +20,6 @@ const ParcelForm = () => {
         const districts = regionDistricts.map(d => d.district);
         return districts;
     };
-    // console.log(districtsByRegion(senderRegion));
     
 
     const handleSendParcel = (data) => {
@@ -68,7 +67,7 @@ const ParcelForm = () => {
                                 className="input w-full"
                                 placeholder="Parcel Name"
                                 {...register('parcelName', {required: true})} />
-                                {errors.parcelName?.type === 'parcelName' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
+                                {errors.parcelName?.type === 'required' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
                         </fieldset>
 
                         <fieldset className="fieldset">
@@ -77,7 +76,7 @@ const ParcelForm = () => {
                                 className="input w-full"
                                 placeholder="Parcel Weight"
                                 {...register('parcelWeight', {required: true})} />
-                                {errors.parcelWeigh?.type === 'required' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
+                                {errors.parcelWeight?.type === 'required' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
                         </fieldset>
                     </div>
 
@@ -109,7 +108,7 @@ const ParcelForm = () => {
                                     className="input w-full"
                                     placeholder="Sender Phone No"
                                     {...register('senderPhone', { required: true })} />
-                                    {errors.senderPhone?.type === "senderPhone" && <p className='font-semibold text-[16px] text-red-500'>Sender Contact number must be included</p>}
+                                    {errors.senderPhone?.type === "required" && <p className='font-semibold text-[16px] text-red-500'>Sender Contact number must be included</p>}
 
 
                                 {/* sender region */}

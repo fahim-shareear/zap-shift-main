@@ -3,13 +3,15 @@ import useAuth from '../hooks/useAuth';
 import { Navigate } from 'react-router';
 
 const PrivateRoutes = ({ children }) => {
-    const {user, loader} = useAuth();
+    const { user, loader } = useAuth();
 
-    if(loader) {
-        return <span className="loading loading-infinity loading-xl"></span>
+    if (loader) {
+        return <div className="flex items-center justify-center h-screen">
+            <span className="loading loading-infinity loading-xl"></span>
+        </div>
     };
 
-    if(!user) {
+    if (!user) {
         return <Navigate to="/login"></Navigate>
     }
 
