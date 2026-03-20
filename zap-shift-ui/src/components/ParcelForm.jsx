@@ -23,7 +23,28 @@ const ParcelForm = () => {
 
     const handleSendParcel = (data) => {
         console.log(data);
-        
+        const isDocument = data.parcelType === 'document';
+        const isSameDistrict = data.senderDistrict === data.receiverDistrict;
+        const parcelWeight = parseFloat(data.parcelWeight || 0);
+
+        let cost = 0;
+        if(isDocument){
+            cost = isSameDistrict ? 60 : 80;
+        }
+        else{
+            if(parcelWeight < 3){
+                cost = isSameDistrict ? 110 : 150;
+            }
+            else{
+                const minCharge = isSameDistrict ? 110 : 150;
+                const extraWeight = parcelWeight - 3;
+                const extraCharge = isSameDistrict ? extraWeight * 40 : extraWeight * 40 + 40;
+
+                cost = minCharge + extraCharge;
+            }
+        };
+
+        console.log("Calculated Cost:",cost);
     };
 
     return (
@@ -111,8 +132,8 @@ const ParcelForm = () => {
 
                                 {/* sender region */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select  className="select select-md w-full" {...register('senderRegion', { required: true })}>
-                                    <option disabled={true} defaultValue="Pick a Region">Select Region</option>
+                                <select  className="select select-md w-full" defaultValue="" {...register('senderRegion', { required: true })}>
+                                    <option value={"Select Region"} >Select Region</option>
                                     {
                                         regions.map((r, index) => (
                                             <option key={index} value={r}>
@@ -125,8 +146,8 @@ const ParcelForm = () => {
 
                                 {/* Sender district */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select  className="select select-md w-full" {...register('senderDistrict', { required: true })}>
-                                    <option disabled={true} defaultValue="Pick a district">Select District</option>
+                                <select  className="select select-md w-full" defaultValue="" {...register('senderDistrict', { required: true })}>
+                                    <option value={"Select District"} >Select District</option>
                                     {
                                         districtsByRegion(senderRegion).map((r, index) => (
                                             <option key={index} value={r}>
@@ -177,8 +198,8 @@ const ParcelForm = () => {
 
                                 {/* receiver Regions */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select  className="select select-md w-full" {...register('receiverRegion', { required: true })}>
-                                    <option disabled={true} defaultValue="Select Region">Select District</option>
+                                <select  className="select select-md w-full" defaultValue="" {...register('receiverRegion', { required: true })}>
+                                    <option value={"Select Region"} >Select Region</option>
                                     {
                                         regions.map((r, index) => (
                                             <option key={index} value={r}>
@@ -190,9 +211,9 @@ const ParcelForm = () => {
                                 {errors.receiverRegion?.type === 'required' && <p className='text-[16px] text-red-500 font-semibold'>Please select the receivers Dsitrict</p>}
 
                                 {/* Receiver District */}
-                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver Region <span className="text-red-500 text-[18px]">*</span></label>
-                                <select  className="select select-md w-full" {...register('receiverDistrict', { required: true })}>
-                                    <option disabled={true} defaultValue="Select Region">Select District</option>
+                                 <label className="label mt-4 text-bold text-primary text-[15px]">Receiver District <span className="text-red-500 text-[18px]">*</span></label>
+                                <select  className="select select-md w-full" defaultValue="" {...register('receiverDistrict', { required: true })}>
+                                    <option value={"Select District"} >Select District</option>
                                     {
                                         districtsByRegion(receiverRegion).map((r, index) => (
                                             <option key={index} value={r}>
