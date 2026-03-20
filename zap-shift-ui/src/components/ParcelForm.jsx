@@ -9,6 +9,7 @@ const ParcelForm = () => {
     const serviceCenters = useLoaderData();
     const regionsDuplicate = serviceCenters.map(c => c.region);
     const regions = [... new Set(regionsDuplicate)];
+    // eslint-disable-next-line react-hooks/incompatible-library
     const senderRegion = watch('senderRegion');
     const receiverRegion = watch('receiverRegion');
 
@@ -19,7 +20,7 @@ const ParcelForm = () => {
         const districts = regionDistricts.map(d => d.district);
         return districts;
     };
-    console.log(districtsByRegion(senderRegion));
+    // console.log(districtsByRegion(senderRegion));
     
 
     const handleSendParcel = (data) => {
