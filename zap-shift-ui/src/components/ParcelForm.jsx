@@ -4,6 +4,7 @@ import useClickAnimation from '../custonHooks/useClickAnimation';
 import { useLoaderData } from 'react-router';
 import Swal from "sweetalert2"
 import useAxiosSecure from '../custonHooks/useAxiosSecure';
+import useAuth from '../custonHooks/useAuth';
 
 const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
@@ -14,6 +15,8 @@ const ParcelForm = () => {
     const senderRegion = useWatch({ control, name: 'senderRegion' });
     const receiverRegion = useWatch({ control, name: 'receiverRegion' });
     const axiosSecure = useAxiosSecure();
+    const {user} = useAuth();
+    console.log(user);
 
 
     const districtsByRegion = region => {
@@ -80,11 +83,17 @@ const ParcelForm = () => {
             confirmButtonText: "I agree!"
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Your order has been canceled.",
-                    icon: "success"
-                });
+                axiosSecure.post("/parcels", data)
+                    .then(res =>{
+                        console.log("after saving parcel", res.data);
+                    }).catch(error =>{
+                        console.log("Eror message", error.message);
+                    })
+                // Swal.fire({
+                //     title: "Success!",
+                //     text: "Your order has been canceled.",
+                //     icon: "success"
+                // });
             }
         });
     };
@@ -152,8 +161,17 @@ const ParcelForm = () => {
                                 <input type="text"
                                     className="input w-full"
                                     placeholder="Sender Name"
+                                    defaultValue={user?.displayName}
                                     {...register('senderName', { required: true })} />
                                 {errors.senderName?.type === "required" && <p className="text-[16px] font-semibold text-red-500">Sender name field can't be empty.</p>}
+
+                                <label className="label text-bold text-primary text-[15px]">Sender Email <span className="text-red-500 text-[18px]">*</span></label>
+                                <input type="email"
+                                    className="input w-full"
+                                    placeholder="Sender email"
+                                    defaultValue={user.email}
+                                    {...register('senderEmail', { required: true })} />
+                                {errors.senderName?.type === "required" && <p className="text-[16px] font-semibold text-red-500">Sender email field can't be empty.</p>}
 
                                 {/* sender address */}
                                 <label className="label mt-4 text-bold text-primary text-[15px]">Sender Address <span className="text-red-500 text-[18px]">*</span></label>

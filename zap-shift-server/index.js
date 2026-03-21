@@ -76,6 +76,15 @@ async function run(){
             res.send(result);
         });
 
+        app.get("/parcels", async(req, res)=>{
+            const query = {};
+            const {email} = req.query;
+
+            if(email){
+                query.senderEmail = email;
+            };
+        });
+
         
 
         await client.db("admin").command({ping: 1});
