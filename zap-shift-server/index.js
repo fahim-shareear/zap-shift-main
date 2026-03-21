@@ -26,7 +26,7 @@ async function run(){
         const userMain = client.db("zapShift");
         const usersCollection = userMain.collection("users");
         const feedback = userMain.collection("feedback");
-        const ordersCollection = userMain.collection("orders");
+        const parcelsCollection = userMain.collection("parcels");
 
         //getting all the users api:
         app.get("/users", async(req, res)=>{
@@ -50,11 +50,17 @@ async function run(){
         });
 
         //parcel order collection endpoint:
-        app.post("/orders", async(req, res)=>{
+        app.post("/parcels", async(req, res)=>{
             const orders = req.body;
-            const result = await ordersCollection.toArray(orders);
+            const result = await parcelsCollection.toArray(orders);
             res.send(result);
         });
+
+        app.get("/parcels", async(req, res)=>{
+            const orders = parcelsCollection.find();
+            const result = await orders.toArray();
+            res.send(result);
+        })
 
         
 
