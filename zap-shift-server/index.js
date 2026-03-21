@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 3000;
 
@@ -52,7 +52,7 @@ async function run(){
         //parcel order collection endpoint:
         app.post("/parcels", async(req, res)=>{
             const orders = req.body;
-            const result = await parcelsCollection.toArray(orders);
+            const result = await parcelsCollection.insertOne(orders);
             res.send(result);
         });
 
@@ -60,7 +60,21 @@ async function run(){
             const orders = parcelsCollection.find();
             const result = await orders.toArray();
             res.send(result);
-        })
+        });
+
+        app.delete("/parcels/:id", async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await parcelsCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        app.get("/parcels/:id", async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await parcelsCollection.findOne(query);
+            res.send(result);
+        });
 
         
 

@@ -3,6 +3,7 @@ import { useForm, useWatch } from "react-hook-form";
 import useClickAnimation from '../custonHooks/useClickAnimation';
 import { useLoaderData } from 'react-router';
 import Swal from "sweetalert2"
+import useAxiosSecure from '../custonHooks/useAxiosSecure';
 
 const ParcelForm = () => {
     const { isClicked, enevtHandlers } = useClickAnimation();
@@ -12,6 +13,7 @@ const ParcelForm = () => {
     const regions = [... new Set(regionsDuplicate)];
     const senderRegion = useWatch({ control, name: 'senderRegion' });
     const receiverRegion = useWatch({ control, name: 'receiverRegion' });
+    const axiosSecure = useAxiosSecure();
 
 
     const districtsByRegion = region => {
@@ -67,7 +69,7 @@ const ParcelForm = () => {
             }
         }
 
-        console.log("Cost of the parcel & delivary: ", cost);
+        // console.log("Cost of the parcel & delivary: ", cost);
         Swal.fire({
             title: "Agree with the Cost?",
             text: `You will be charged. ${cost} taka!`,
