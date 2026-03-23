@@ -34,9 +34,6 @@ const Navbar = () => {
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/about-us">About Us</NavLink></li>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/pricing">Pricing</NavLink></li>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/bearider">Be a Rider</NavLink></li>
-        {
-            user && <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/dashboard/my-parcels">My Parcels</NavLink></li>
-        }
 
     </>
 
@@ -76,6 +73,7 @@ const Navbar = () => {
                                 <h3 className="font-medium text-white">{user.email}</h3>
                                 <ul className="list-none">
                                     <li className="font-medium text-white cursor-pointer"><Link to="/dashboard">Dashboard</Link></li>
+                                    <li className="font-medium text-white cursor-pointer"><Link to="/dashboard/my-parcels">My parcels</Link></li>
                                     <li className="font-medium text-white cursor-pointer"><Link to="/edit-profile">Edit Profile</Link></li>
                                 </ul>
                                 <button className="border border-white rounded-md font-bold p-2 mt-4 text-white hover:bg-secondary hover:text-primary cursor-pointer duration-300  transition transform active:scale-95"
