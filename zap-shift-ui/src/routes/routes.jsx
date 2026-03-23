@@ -9,6 +9,8 @@ import Register from "../pages/Auth/register/Register";
 import ErrorElement from "../pages/shared/ErrorElement";
 import SendAParcel from "../pages/sendAparcel/SendAParcel";
 import PrivateRoutes from "./PrivateRoutes";
+import DashboardLayout from "../layouts/DashboardLayout";
+import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
 
 const routes = createBrowserRouter([
     {
@@ -31,6 +33,12 @@ const routes = createBrowserRouter([
         children: [
             {path: "login", Component: Login},
             {path: "register", Component: Register}
+        ]
+    },
+    {
+        path: "dashboard", element: <PrivateRoutes><DashboardLayout></DashboardLayout></PrivateRoutes>,
+        children: [
+            {path: "my-parcels", Component: MyParcels}
         ]
     }
 ]);

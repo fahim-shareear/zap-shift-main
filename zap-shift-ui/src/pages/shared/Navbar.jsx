@@ -34,6 +34,9 @@ const Navbar = () => {
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/about-us">About Us</NavLink></li>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/pricing">Pricing</NavLink></li>
         <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/bearider">Be a Rider</NavLink></li>
+        {
+            user && <li className="text-lg"><NavLink className={({ isActive }) => isActive ? "text-primary font-bold" : "text-accent"} to="/dashboard/my-parcels">My Parcels</NavLink></li>
+        }
 
     </>
 
