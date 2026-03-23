@@ -56,12 +56,6 @@ async function run(){
             res.send(result);
         });
 
-        app.get("/parcels", async(req, res)=>{
-            const orders = parcelsCollection.find();
-            const result = await orders.toArray();
-            res.send(result);
-        });
-
         app.delete("/parcels/:id", async(req, res)=>{
             const id = req.params.id;
             const query = {_id: new ObjectId(id)};
@@ -83,6 +77,10 @@ async function run(){
             if(email){
                 query.senderEmail = email;
             };
+
+            const cursor = parcelsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
         });
 
         
