@@ -123,6 +123,7 @@ const ParcelForm = () => {
                             <input type="number"
                                 className="input w-full"
                                 placeholder="Parcel Weight"
+                                step="any"
                                 {...register('parcelWeight', { required: true })} />
                             {errors.parcelWeight?.type === 'required' && <p className="text-[16px] text-red-500 font-semibold">Parcel Name is required</p>}
                         </fieldset>
