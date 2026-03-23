@@ -52,6 +52,7 @@ async function run(){
         //parcel order collection endpoint:
         app.post("/parcels", async(req, res)=>{
             const orders = req.body;
+            orders.createdAt = new Date();
             const result = await parcelsCollection.insertOne(orders);
             res.send(result);
         });
