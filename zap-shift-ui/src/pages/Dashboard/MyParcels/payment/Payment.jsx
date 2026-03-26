@@ -23,8 +23,9 @@ const Payment = () => {
 
     return (
         <div>
-            <h2>Please Pay</h2>
+            <h2>Please Pay: ${parcel.cost}</h2>
             <h2>{parcel.parcelName}</h2>
+            <button className='btn btn-secondary text-black'>Pay</button>
         </div>
     );
 };

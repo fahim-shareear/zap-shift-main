@@ -3,6 +3,7 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 3000;
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 //middleware starting:
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 
 const uri = process.env.MONGO_URI
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
@@ -84,6 +86,37 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         });
+
+        //CREATING STRIPE PAYMENT GETWAY:
+        app.post('/create-checkout-session', async (req, res) => {
+            const paymentInfo = req.body;
+            const amount = parceInt(paymentInfo.cost) * 100;
+            const session = await stripe.checkout.session.create({
+                line_items: [
+                    {
+                        price_data: {
+                            currency: 'USD',
+                            unit_amount: amount,
+                            product_data: {
+                                name: paymentInfo.parcelName,
+                            }
+                        },
+                        quantity: 1,
+                    }
+                ],
+                mode: 'payment',
+                customer_email: paymentInfo.senderEmail,
+                metadata: {
+                    parcelId: paymentInfo.parcelId
+                },
+                success_url: `${process.env.SITE_URL}/dashboard/payment-succes`,
+                calcel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled`,
+            });
+
+            // res.redirect(303, session.url);
+            console.log(session);
+            res.send({ url: session.url });
+        })
 
 
 
