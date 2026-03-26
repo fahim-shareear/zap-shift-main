@@ -95,7 +95,7 @@ async function run() {
                 line_items: [
                     {
                         price_data: {
-                            currency: 'usd',
+                            currency: 'bdt',
                             unit_amount: amount,
                             product_data: {
                                 name: paymentInfo.parcelName,
@@ -109,7 +109,7 @@ async function run() {
                 metadata: {
                     parcelId: paymentInfo.parcelId
                 },
-                success_url: `${process.env.SITE_URL}/dashboard/payment-succes`,
+                success_url: `${process.env.SITE_URL}/dashboard/payment-success`,
                 cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled`,
             });
 
