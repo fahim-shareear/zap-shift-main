@@ -6,6 +6,7 @@ import { FaEye } from "react-icons/fa";
 import { RiEdit2Fill } from "react-icons/ri";
 import { FaTrashAlt } from "react-icons/fa";
 import Swal from 'sweetalert2';
+import { Link } from 'react-router';
 
 const MyParcels = () => {
     const { user } = useAuth();
@@ -68,6 +69,7 @@ const MyParcels = () => {
                         <th>Cost</th>
                         <th>Receiver Name</th>
                         <th>Payment Status</th>
+                        <th>Delivery Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -79,7 +81,14 @@ const MyParcels = () => {
                             <td>{parcel.parcelName}</td>
                             <td>{parcel.cost}</td>
                             <td>{parcel.receiverName}</td>
-                            <td>payment status</td>
+                            <td>
+                                {parcel.paymentStatus === 'paid' ?
+                                <span className='text-green-400'>Paid</span>:
+                                <Link to={`/dashboard/payment/${parcel._id}`}>
+                                    <button className="btn btn-secondary btn-small text-black">Pay</button>
+                                </Link>}
+                            </td>
+                            <td>Delivery status</td>
                             <td>
                                 <button className='btn btn-square'>
                                     <FaEye />
