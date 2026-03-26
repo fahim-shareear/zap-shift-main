@@ -13,15 +13,15 @@ app.use(express.json());
 const uri = process.env.MONGO_URI
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
 });
 
-async function run(){
-    try{
+async function run() {
+    try {
         await client.connect();
         const userMain = client.db("zapShift");
         const usersCollection = userMain.collection("users");
@@ -29,66 +29,68 @@ async function run(){
         const parcelsCollection = userMain.collection("parcels");
 
         //getting all the users api:
-        app.get("/users", async(req, res)=>{
+        app.get("/users", async (req, res) => {
             const cursor = usersCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         });
 
         //posting api for creating users:
-        app.post("/users", async(req, res)=>{
+        app.post("/users", async (req, res) => {
             const users = req.body;
             const result = await usersCollection.insertOne(users);
             res.send(result);
         });
 
         //getting the feedback data and posting also:
-        app.get("/feedback", async(req, res)=>{
+        app.get("/feedback", async (req, res) => {
             const cursor = feedback.find();
             const result = await cursor.toArray();
             res.send(result);
         });
 
         //parcel order collection endpoint:
-        app.post("/parcels", async(req, res)=>{
+        app.post("/parcels", async (req, res) => {
             const orders = req.body;
             orders.createdAt = new Date();
             const result = await parcelsCollection.insertOne(orders);
             res.send(result);
         });
 
-        app.delete("/parcels/:id", async(req, res)=>{
+        app.delete("/parcels/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await parcelsCollection.deleteOne(query);
             res.send(result);
         });
 
-        app.get("/parcels/:id", async(req, res)=>{
+        app.get("/parcels/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await parcelsCollection.findOne(query);
             res.send(result);
         });
 
-        app.get('/parcels', async(req, res)=>{
+        app.get('/parcels', async (req, res) => {
             const query = {};
-            const {email} = req.query;
-            if(email){
+            const { email } = req.query;
+            if (email) {
                 query.senderEmail = email;
             };
 
-            const cursor = parcelsCollection.find(query);
+            const options = { sort: { createdAt: -1 } }
+
+            const cursor = parcelsCollection.find(query, options);
             const result = await cursor.toArray();
             res.send(result);
         });
 
-        
 
-        await client.db("admin").command({ping: 1});
+
+        await client.db("admin").command({ ping: 1 });
         console.log("Pinged the mondoDB server. It is connected")
     }
-    finally{
+    finally {
 
     }
 };
@@ -96,10 +98,10 @@ async function run(){
 run().catch(console.dir);
 
 
-app.get("/", (req, res)=>{
+app.get("/", (req, res) => {
     res.send("Server is connected");
 });
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`Local server is running on port ${port}`);
 });
