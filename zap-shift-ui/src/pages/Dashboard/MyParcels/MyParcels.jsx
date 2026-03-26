@@ -17,6 +17,9 @@ const MyParcels = () => {
 
     return (
         <div className="overflow-x-auto">
+            <div>
+                <h1 className="font-bold text-xl">All of my parcels: {parcels.length}</h1>
+            </div>
             <table className="table table-zebra">
                 {/* head */}
                 <thead>
