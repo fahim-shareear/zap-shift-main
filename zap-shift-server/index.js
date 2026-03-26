@@ -90,12 +90,12 @@ async function run() {
         //CREATING STRIPE PAYMENT GETWAY:
         app.post('/create-checkout-session', async (req, res) => {
             const paymentInfo = req.body;
-            const amount = parceInt(paymentInfo.cost) * 100;
-            const session = await stripe.checkout.session.create({
+            const amount = parseInt(paymentInfo.cost) * 100;
+            const session = await stripe.checkout.sessions.create({
                 line_items: [
                     {
                         price_data: {
-                            currency: 'USD',
+                            currency: 'usd',
                             unit_amount: amount,
                             product_data: {
                                 name: paymentInfo.parcelName,
@@ -110,7 +110,7 @@ async function run() {
                     parcelId: paymentInfo.parcelId
                 },
                 success_url: `${process.env.SITE_URL}/dashboard/payment-succes`,
-                calcel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled`,
+                cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled`,
             });
 
             // res.redirect(303, session.url);
