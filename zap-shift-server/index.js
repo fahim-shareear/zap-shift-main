@@ -137,7 +137,7 @@ async function run() {
             }
             console.log('Session Retrieve', session);
 
-            res.send({success: true});
+            res.send({success: false});
         });
 
 

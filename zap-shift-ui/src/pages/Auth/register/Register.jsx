@@ -11,7 +11,7 @@ const Register = () => {
     const { register,
         handleSubmit,
         formState: { errors } } = useForm();
-    const {registerUser, loader} = useAuth();
+    const {registerUser} = useAuth();
     const navigate = useNavigate();
 
     const handleRegister = (data) => {
@@ -71,7 +71,7 @@ const Register = () => {
                         {errors.password?.type === 'pattern' && <p className="text-red-500 py-1">Password must contain one capital letter one small letter and one special character</p>}
                     </div>
 
-                    <button className="btn btn-secondary text-black mt-4 rounded-xl" onClick={loader}>Register</button>
+                    <button className="btn btn-secondary text-black mt-4 rounded-xl">Register</button>
                 </fieldset>
             </form>
             <div className="pl-3">
