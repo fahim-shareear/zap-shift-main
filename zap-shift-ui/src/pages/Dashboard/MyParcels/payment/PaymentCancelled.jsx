@@ -16,7 +16,7 @@ const PaymentCancelled = () => {
 
                 <h1 className='payment-success mt-5'>You payment has been cancelled</h1>
                 <NavLink to="/dashboard/my-parcels">
-                    <button className='bg-green-500 rounded-xl p-2 shadow-xl text-white font-bold cursor-pointer go-back-btn'>Go Back</button>
+                    <button className='bg-green-500 rounded-xl p-2 shadow-xl text-white font-bold cursor-pointer go-back-btn'>Try Again</button>
                 </NavLink>
             </div>
         </div>
