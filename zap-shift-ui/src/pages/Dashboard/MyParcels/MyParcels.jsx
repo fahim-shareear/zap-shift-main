@@ -97,7 +97,7 @@ const MyParcels = () => {
                             <td>{parcel.receiverName}</td>
                             <td>
                                 {parcel.paymentStatus === 'paid' ?
-                                <span className='text-green-400'>Paid</span>:
+                                <span className='text-secondary btn btn-primary '>Paid</span>:
                                     <button className="btn btn-secondary btn-small text-black" onClick={() =>hadlePayment(parcel)}>Pay</button>
                                 }
                             </td>

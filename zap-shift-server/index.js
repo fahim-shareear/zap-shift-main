@@ -116,7 +116,27 @@ async function run() {
             // res.redirect(303, session.url);
             console.log(session);
             res.send({ url: session.url });
-        })
+        });
+
+        app.patch('/payment-success', async(req, res)=>{
+            const sessionId = req.query.session_id;
+            const session = await stripe.checkout.sessions.retrieve(sessionId);
+            if(session.payment_status === 'paid'){
+                const id = session.metadata.parcelId;
+                const query = {_id: new ObjectId(id)};
+                const update = {
+                    $set: {
+                        paymentStatus: 'paid',
+                        createdAt: new Date(),
+                    }
+                }
+                const result = await parcelsCollection.updateOne(query, update);
+                res.send(result);
+            }
+            console.log('Session Retrieve', session);
+
+            res.send({success: true});
+        });
 
 
 
