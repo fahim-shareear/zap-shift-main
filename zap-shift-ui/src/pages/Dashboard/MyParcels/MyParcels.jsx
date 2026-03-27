@@ -52,6 +52,20 @@ const MyParcels = () => {
                     });
             };
         });
+    };
+
+    const hadlePayment = async (parcel) =>{
+        if(!parcel) return
+        const paymentInfo = {
+            cost: parcel.cost,
+            parcelId: parcel._id,
+            senderEmail: parcel.senderEmail,
+            parcelName: parcel.parcelName
+        };
+
+        const res = await axiosSecure.post('/create-checkout-session', paymentInfo);
+        window.location.assign(res.data.url);
+        console.log(res.data)
     }
 
     return (
@@ -84,9 +98,8 @@ const MyParcels = () => {
                             <td>
                                 {parcel.paymentStatus === 'paid' ?
                                 <span className='text-green-400'>Paid</span>:
-                                <Link to={`/dashboard/payment/${parcel._id}`}>
-                                    <button className="btn btn-secondary btn-small text-black">Pay</button>
-                                </Link>}
+                                    <button className="btn btn-secondary btn-small text-black" onClick={() =>hadlePayment(parcel)}>Pay</button>
+                                }
                             </td>
                             <td>Delivery status</td>
                             <td>
