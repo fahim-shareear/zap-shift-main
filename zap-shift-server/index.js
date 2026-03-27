@@ -118,6 +118,8 @@ async function run() {
             res.send({ url: session.url });
         });
 
+
+        //updating the parcel info after confirming if the payment is successful
         app.patch('/payment-success', async(req, res)=>{
             const sessionId = req.query.session_id;
             const session = await stripe.checkout.sessions.retrieve(sessionId);
