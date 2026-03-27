@@ -98,7 +98,7 @@ async function run() {
                             currency: 'bdt',
                             unit_amount: amount,
                             product_data: {
-                                name: paymentInfo.parcelName,
+                                name: `"Please pay for:" ${paymentInfo.parcelName}`,
                             }
                         },
                         quantity: 1,
@@ -109,8 +109,8 @@ async function run() {
                 metadata: {
                     parcelId: paymentInfo.parcelId
                 },
-                success_url: `${process.env.SITE_URL}/dashboard/payment-success`,
-                cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled`,
+                success_url: `${process.env.SITE_URL}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+                cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled?success=false`,
             });
 
             // res.redirect(303, session.url);
