@@ -131,15 +131,15 @@ async function run() {
 
 
         //updating the parcel info after confirming if the payment is successful
-        app.patch('/payment-success', async(req, res)=>{
+        app.patch('/payment-success', async (req, res) => {
             const sessionId = req.query.session_id;
             const session = await stripe.checkout.sessions.retrieve(sessionId);
-            const trackingId= generateTrackingId();
+            const trackingId = generateTrackingId();
 
 
-            if(session.payment_status === 'paid'){
+            if (session.payment_status === 'paid') {
                 const id = session.metadata.parcelId;
-                const query = {_id: new ObjectId(id)};
+                const query = { _id: new ObjectId(id) };
                 const update = {
                     $set: {
                         paymentStatus: 'paid',
@@ -151,27 +151,30 @@ async function run() {
 
                 // Creating payment history:
                 const payment = {
-                    aount: session.amount_total/100,
+                    amount: session.amount_total / 100,
                     currency: session.currency,
                     customer_email: session.customer_email,
                     parcelId: session.metadata.parcelId,
-                    parcelName: session.parcelName,
+                    parcelName: session.metadata.parcelName,
                     transactionId: session.payment_intent,
                     paymentStatus: session.payment_status,
                     paidAt: new Date(),
                 };
 
-                if(session.payment_status === 'paid'){
+                if (session.payment_status === 'paid') {
                     const resultPayment = await paymentCollection.insertOne(payment);
-                    res.send({success: true, 
-                            modifyParcel: result, 
-                            paymentInfo: resultPayment,
-                        trackingId});
-                }
-            }
+                    res.send({
+                        success: true,
+                        modifyParcel: result,
+                        paymentInfo: resultPayment,
+                        trackingId,
+                        transactionId: session.payment_intent
+                    });
+                };
+            };
             console.log('Session Retrieve', session);
 
-            res.send({success: false});
+            res.send({ success: false });
         });
 
 
