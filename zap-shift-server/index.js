@@ -173,8 +173,6 @@ async function run() {
                 };
             };
             console.log('Session Retrieve', session);
-
-            res.send({ success: false });
         });
 
 
