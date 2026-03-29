@@ -4,6 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 3000;
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const crypto = require("crypto");
 
 //middleware starting:
 const app = express();
@@ -22,6 +23,14 @@ const client = new MongoClient(uri, {
     }
 });
 
+function generateTrackingId() {
+    const prefix = "PRCL";
+    const date = new Date().toISOString().slice(0, 10).replace(/ -/g, "");
+    const random = crypto.randomBytes(3).toString("hex").toUpperCase();
+
+    return `${prefix}-${date}-${random}`;
+};
+
 async function run() {
     try {
         await client.connect();
@@ -29,6 +38,7 @@ async function run() {
         const usersCollection = userMain.collection("users");
         const feedback = userMain.collection("feedback");
         const parcelsCollection = userMain.collection("parcels");
+        const paymentCollection = userMain.collection('payments');
 
         //getting all the users api:
         app.get("/users", async (req, res) => {
@@ -107,7 +117,8 @@ async function run() {
                 mode: 'payment',
                 customer_email: paymentInfo.senderEmail,
                 metadata: {
-                    parcelId: paymentInfo.parcelId
+                    parcelId: paymentInfo.parcelId,
+                    parcelName: paymentInfo.parcelName
                 },
                 success_url: `${process.env.SITE_URL}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
                 cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled?success=false`,
@@ -130,10 +141,27 @@ async function run() {
                     $set: {
                         paymentStatus: 'paid',
                         createdAt: new Date(),
+                        trackingId: generateTrackingId()
                     }
                 }
                 const result = await parcelsCollection.updateOne(query, update);
-                res.send(result);
+
+                // Creating payment history:
+                const payment = {
+                    aount: session.amount_total/100,
+                    currency: session.currency,
+                    customer_email: session.customer_email,
+                    parcelId: session.metadata.parcelId,
+                    parcelName: session.parcelName,
+                    transactionId: session.payment_intent,
+                    paymentStatus: session.payment_status,
+                    paidAt: new Date(),
+                };
+
+                if(session.payment_status === 'paid'){
+                    const resultPayment = await paymentCollection.insertOne(payment);
+                    res.send({success: true, modifyParcel: result, paymentInfo: resultPayment});
+                }
             }
             console.log('Session Retrieve', session);
 

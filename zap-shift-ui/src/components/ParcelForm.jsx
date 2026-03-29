@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm, useWatch } from "react-hook-form";
 import useClickAnimation from '../custonHooks/useClickAnimation';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import Swal from "sweetalert2"
 import useAxiosSecure from '../custonHooks/useAxiosSecure';
 import useAuth from '../custonHooks/useAuth';
@@ -15,7 +15,8 @@ const ParcelForm = () => {
     const senderRegion = useWatch({ control, name: 'senderRegion' });
     const receiverRegion = useWatch({ control, name: 'receiverRegion' });
     const axiosSecure = useAxiosSecure();
-    const {user} = useAuth();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     // console.log(user);
 
 
@@ -58,20 +59,25 @@ const ParcelForm = () => {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "I agree!"
+            confirmButtonText: "Confirm order and proceed to Payment?"
         }).then((result) => {
             if (result.isConfirmed) {
                 axiosSecure.post("/parcels", data)
-                    .then(res =>{
+                    .then(res => {
                         console.log("after saving parcel", res.data);
-                    }).catch(error =>{
+                        navigate('/dashboard/my-parcels')
+                        if (res.data.insertedId) {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Parcel has been created please Pay",
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        }
+                    }).catch(error => {
                         console.log("Eror message", error.message);
                     })
-                // Swal.fire({
-                //     title: "Success!",
-                //     text: "Your order has been canceled.",
-                //     icon: "success"
-                // });
             }
         });
     };
