@@ -1,5 +1,4 @@
 import React from 'react';
-import './payment.css'
 import { NavLink } from 'react-router';
 
 const PaymentCancelled = () => {
