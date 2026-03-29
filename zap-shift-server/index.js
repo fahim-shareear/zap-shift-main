@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 
 function generateTrackingId() {
     const prefix = "PRCL";
-    const date = new Date().toISOString().slice(0, 10).replace(/ -/g, "");
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     const random = crypto.randomBytes(3).toString("hex").toUpperCase();
 
     return `${prefix}-${date}-${random}`;
@@ -134,6 +134,9 @@ async function run() {
         app.patch('/payment-success', async(req, res)=>{
             const sessionId = req.query.session_id;
             const session = await stripe.checkout.sessions.retrieve(sessionId);
+            const trackingId= generateTrackingId();
+
+
             if(session.payment_status === 'paid'){
                 const id = session.metadata.parcelId;
                 const query = {_id: new ObjectId(id)};
@@ -141,7 +144,7 @@ async function run() {
                     $set: {
                         paymentStatus: 'paid',
                         createdAt: new Date(),
-                        trackingId: generateTrackingId()
+                        trackingId: trackingId
                     }
                 }
                 const result = await parcelsCollection.updateOne(query, update);
@@ -160,7 +163,10 @@ async function run() {
 
                 if(session.payment_status === 'paid'){
                     const resultPayment = await paymentCollection.insertOne(payment);
-                    res.send({success: true, modifyParcel: result, paymentInfo: resultPayment});
+                    res.send({success: true, 
+                            modifyParcel: result, 
+                            paymentInfo: resultPayment,
+                        trackingId});
                 }
             }
             console.log('Session Retrieve', session);
