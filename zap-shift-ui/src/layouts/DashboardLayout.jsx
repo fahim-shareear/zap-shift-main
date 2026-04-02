@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import { FaBoxArchive } from "react-icons/fa6";
+import { MdOutlinePayment } from "react-icons/md";
 
 const DashboardLayout = () => {
     return (
@@ -37,6 +38,14 @@ const DashboardLayout = () => {
                             <NavLink to="/dashboard/my-parcels" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Parcels">
                                 <span><FaBoxArchive /></span>
                                 <span className='is-drawer-close:hidden'>My Parcels</span>
+                            </NavLink>
+                        </li>
+
+
+                        <li>
+                            <NavLink to="/dashboard/payment-history" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Payment History">
+                                <span className="font-bold text-[17px]"><MdOutlinePayment /></span>
+                                <span className='is-drawer-close:hidden'>Payment History</span>
                             </NavLink>
                         </li>
 

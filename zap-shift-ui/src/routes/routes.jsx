@@ -13,6 +13,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
 import PaymentSuccess from "../pages/Dashboard/MyParcels/payment/PaymentSuccess";
 import PaymentCancelled from "../pages/Dashboard/MyParcels/payment/PaymentCancelled";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 
 const routes = createBrowserRouter([
     {
@@ -42,7 +43,8 @@ const routes = createBrowserRouter([
         children: [
             {path: "my-parcels", Component: MyParcels},
             {path: 'payment-success', Component: PaymentSuccess},
-            {path: 'payment-cancelled', Component: PaymentCancelled}
+            {path: 'payment-cancelled', Component: PaymentCancelled},
+            {path: 'payment-history', Component: PaymentHistory}
         ]
     }
 ]);
