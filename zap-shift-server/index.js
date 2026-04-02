@@ -142,7 +142,11 @@ async function run() {
             const paymentExists = await paymentCollection.findOne(query);
 
             if(paymentExists){
-                return res.send({message: 'already exists', transactionId});
+                return res.send({
+                    message: 'already exists',
+                    transactionId,
+                    trackingId
+                });
             };
 
 
@@ -160,6 +164,7 @@ async function run() {
 
                 // Creating payment history:
                 const payment = {
+                    name: session.metadata.parcelName,
                     amount: session.amount_total / 100,
                     currency: session.currency,
                     customer_email: session.customer_email,
