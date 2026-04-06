@@ -8,9 +8,9 @@ const axiosSecure = axios.create({
 })
 
 const useAxiosSecure = () => {
-    const {user} = useAuth();
+    const { user } = useAuth();
 
-    useEffect(()=> {
+    useEffect(() => {
         // intercept request:
         axiosSecure.interceptors.request.use(config => {
             config.headers.Authorization = `Bearer ${user?.accessToken}`

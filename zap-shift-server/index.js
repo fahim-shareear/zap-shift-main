@@ -10,6 +10,14 @@ const crypto = require("crypto");
 const app = express();
 app.use(cors());
 app.use(express.json());
+const verifyFirebase = (req, res, next) => {
+    console.log('Headers :', req.headers.authorization);
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(403).send({ message: "Unauthorized access" });
+    }
+    next();
+};
 
 
 const uri = process.env.MONGO_URI
@@ -141,7 +149,7 @@ async function run() {
 
             const paymentExists = await paymentCollection.findOne(query);
 
-            if(paymentExists){
+            if (paymentExists) {
                 return res.send({
                     message: 'already exists',
                     transactionId,
@@ -192,10 +200,10 @@ async function run() {
 
 
         //getting the payments:
-        app.get('/payments', async (req, res)=>{
+        app.get('/payments', verifyFirebase, async (req, res) => {
             const email = req.query.email;
             const query = {};
-            if(email){
+            if (email) {
                 query.customer_email = email;
             };
 
