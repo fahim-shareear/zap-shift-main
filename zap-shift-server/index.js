@@ -5,6 +5,7 @@ require('dotenv').config();
 const port = process.env.PORT || 3000;
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const crypto = require("crypto");
+const admin = require("firebase-admin");
 
 //middleware starting:
 const app = express();
@@ -21,6 +22,7 @@ const verifyFirebase = (req, res, next) => {
 
 
 const uri = process.env.MONGO_URI
+const serviceAccount = require("./zap-shift-firebase-sdk-key.json");
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,6 +31,10 @@ const client = new MongoClient(uri, {
         strict: true,
         deprecationErrors: true,
     }
+});
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
 });
 
 function generateTrackingId() {
