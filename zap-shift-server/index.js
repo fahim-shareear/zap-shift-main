@@ -11,13 +11,23 @@ const admin = require("firebase-admin");
 const app = express();
 app.use(cors());
 app.use(express.json());
-const verifyFirebase = (req, res, next) => {
-    console.log('Headers :', req.headers.authorization);
+
+const verifyFirebase = async (req, res, next) => {
     const token = req.headers.authorization;
     if (!token) {
         return res.status(403).send({ message: "Unauthorized access" });
     }
-    next();
+
+    try{
+        const idToken = token.split(' ')[1];
+        const decoded = await admin.auth().verifyIdToken(idToken);
+        console.log(decoded);
+        req.decoded_email = decoded.email;
+        next();
+    }
+    catch (err){
+        return res.status(401).send({message: "Unauthorized Access."})
+    }
 };
 
 
@@ -212,6 +222,10 @@ async function run() {
             if (email) {
                 query.customer_email = email;
             };
+
+            if(email !== req.decoded_email){
+                return res.status(403).send({message: "Forbidded Request"})
+            }
 
             const cursor = paymentCollection.find(query);
             const result = await cursor.toArray();
