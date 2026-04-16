@@ -4,22 +4,23 @@ import useAxiosSecure from '../../../custonHooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 
 const PaymentHistory = () => {
-    const { user } = useAuth();
+    const { user, loader } = useAuth();
     const axiosSecure = useAxiosSecure();
 
     const { data: payments = [] } = useQuery({
         queryKey: ['payments', user?.email],
+        enabled: !loader && !!user?.email,
         queryFn: async () => {
             const res = await axiosSecure.get(`/payments?email=${user?.email}`);
             // console.log(res.data);
             return res.data;
         }
-    })
+    });
 
 
     return (
         <div className="md:max-w-7xl mx-auto shadow-xl mt-3">
-            <h1>Payment History here {payments.length}</h1>
+            <h1 className="font-bold mx-5">Payment History here {payments.length}</h1>
             <div className="overflow-x-auto">
                 <table className="table table-zebra">
                     {/* head */}
@@ -29,6 +30,7 @@ const PaymentHistory = () => {
                             <th>Name</th>
                             <th>Paid Amount</th>
                             <th>Payment Status</th>
+                            <th>Payment At</th>
                             <th>Transaction ID</th>
                             <th>Tracking ID</th>
                         </tr>
@@ -42,6 +44,7 @@ const PaymentHistory = () => {
                                     <td>{payment.parcelName}</td>
                                     <td>${payment.amount}</td>
                                     <td className="text-green-500 capitalize">{payment.paymentStatus}</td>
+                                    <td>{payment.paidAt}</td>
                                     <td>{payment.transactionId}</td>
                                     <td>{payment.trackingId}</td>
                                 </tr>

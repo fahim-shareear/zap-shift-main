@@ -7,9 +7,15 @@ import { FaArrowCircleRight } from 'react-icons/fa';
 import bannerImg1 from '../../assets/banner/banner1.png';
 import bannerImg2 from '../../assets/banner/banner2.png';
 import bannerImg3 from '../../assets/banner/banner3.png';
+import { useNavigate } from 'react-router';
 
 const Banner = () => {
     const images = [bannerImg1, bannerImg2, bannerImg3];
+    const navigate = useNavigate();
+
+    const handleNavigate = () =>{
+        navigate("/be-a-rider")
+    };
 
     return (
         <Carousel 
@@ -40,7 +46,7 @@ const Banner = () => {
                                 </span>
                             </button>
                             
-                            <button className="text-sm md:text-xl font-semibold rounded-md px-6 py-2 cursor-pointer border border-white bg-white/10 text-primary backdrop-blur-sm hover:bg-white hover:text-black transition-all">
+                            <button className="text-sm md:text-xl font-semibold rounded-md px-6 py-2 cursor-pointer border border-white bg-white/10 text-primary backdrop-blur-sm hover:bg-white hover:text-black transition-all" onClick={() => handleNavigate()}>
                                 Be a Rider
                             </button>
                         </div>

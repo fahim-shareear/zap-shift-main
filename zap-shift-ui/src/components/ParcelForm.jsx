@@ -190,7 +190,7 @@ const ParcelForm = () => {
                                 {errors.senderRegion?.type === "required" && <p className="font-semibold text-[16px] text-red-500">Please select your Region</p>}
 
                                 {/* Sender district */}
-                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender Region <span className="text-red-500 text-[18px]">*</span></label>
+                                <label className="label mt-4 text-bold text-primary text-[15px]">Sender District <span className="text-red-500 text-[18px]">*</span></label>
                                 <select className="select select-md w-full" defaultValue="" {...register('senderDistrict', { required: true })}>
                                     <option value={"Select District"} >Select District</option>
                                     {

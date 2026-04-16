@@ -1,18 +1,32 @@
 import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import useAxiosSecure from '../../../custonHooks/useAxiosSecure';
 
 const SocialLogin = () => {
     const { popupLogin } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const axiosSecure = useAxiosSecure();
 
-    const googleLogin = () =>{
+    const googleLogin = () => {
         popupLogin()
             .then((result) => {
                 // console.log(result.user);
-                toast.success(`Welcome back ${result.user.displayName}`);
-                navigate("/");
+
+                const userInfo = {
+                    email: result.user.email,
+                    displayName: result.user.displayName,
+                    photoURL: result.user.photoURL,
+                };
+
+                axiosSecure.post('/users', userInfo)
+                    .then(res => {
+                        // console.log("Saving social login data to database:", res.data);
+                        toast.success(`Welcome ${res.displayName}.`);
+                        navigate(location.state || '/');
+                    });
             })
             .catch(error => {
                 toast.error(error.message);

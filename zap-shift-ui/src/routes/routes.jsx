@@ -14,12 +14,15 @@ import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
 import PaymentSuccess from "../pages/Dashboard/MyParcels/payment/PaymentSuccess";
 import PaymentCancelled from "../pages/Dashboard/MyParcels/payment/PaymentCancelled";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import RiderForm from "../beArider/RiderForm";
+import Loader from "../pages/shared/Loader";
+import ApproveRiders from "../pages/Dashboard/ApproveRiders/ApproveRiders";
 
 const routes = createBrowserRouter([
     {
         path: '/', Component: RootLayout,
         errorElement: <ErrorElement></ErrorElement>,
-        hydrateFallbackElement: <h2>Loading.....</h2>,
+        hydrateFallbackElement: <Loader></Loader>,
         children: [
             {index: true, Component: Home},
             {path: "coverage", Component: Coverage,
@@ -27,6 +30,9 @@ const routes = createBrowserRouter([
             },
             {path: "about-us", Component: About},
             {path: "send-a-parcel", element: <PrivateRoutes><SendAParcel></SendAParcel></PrivateRoutes>,
+                loader: () => fetch("/serviceCenter.json").then(res => res.json())
+            },
+            {path: "be-a-rider", element: <PrivateRoutes><RiderForm></RiderForm></PrivateRoutes>,
                 loader: () => fetch("/serviceCenter.json").then(res => res.json())
             }
         ]
@@ -44,7 +50,8 @@ const routes = createBrowserRouter([
             {path: "my-parcels", Component: MyParcels},
             {path: 'payment-success', Component: PaymentSuccess},
             {path: 'payment-cancelled', Component: PaymentCancelled},
-            {path: 'payment-history', Component: PaymentHistory}
+            {path: 'payment-history', Component: PaymentHistory},
+            {path: 'approve-riders', Component: ApproveRiders}
         ]
     }
 ]);

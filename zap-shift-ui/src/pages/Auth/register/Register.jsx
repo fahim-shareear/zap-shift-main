@@ -1,37 +1,93 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../sociallogin/SocialLogin';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+import useAxiosSecure from '../../../custonHooks/useAxiosSecure';
 
 const Register = () => {
+    const axiosSecure = useAxiosSecure();
     const [eye, setEye] = useState(false);
     const { register,
         handleSubmit,
         formState: { errors } } = useForm();
-    const {registerUser} = useAuth();
+    const { registerUser, updateUserProfile } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleRegister = (data) => {
-        console.log(data);
+        // console.log(data);
+        const profileImg = data.image[0];
         registerUser(data.email, data.password)
-            .then(result => {
-                console.log(result.user);
-                toast.success(`Welcome ${data.name} to ZapShift!`);
-                setTimeout(() => {
-                    navigate("/");
-                }, 2000)
+            .then(() => {
+                // console.log(result.user);
+                //store the image and get the photo url
+                const formData = new FormData();
+                formData.append('image', profileImg);
+
+                const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`
+                axios.post(image_API_URL, formData)
+                    .then(res => {
+                        const photoURL = res.data.data.url;
+
+                        //create user in the database
+                        const userInfo = {
+                            email: data.email,
+                            displayName: data.name,
+                            photoURL: photoURL
+                        }
+
+                        axiosSecure.post('/users', userInfo)
+                            .then(res => {
+                                if (res.data.insertedId) {
+                                    console.log('User created in the Database');
+                                    toast.success("Welcome to ZapShift");
+                                }
+
+                            })
+
+                        //update user in the firebase
+                        const userProfile = {
+                            displayName: data.name,
+                            photoURL: photoURL
+                        };
+
+                        updateUserProfile(userProfile)
+                            .then(() => {
+                                navigate(location.state || '/');
+                            })
+                            .catch(error => {
+                                if (error.code === 'auth/email-already-in-use') {
+                                    toast.error("This email is already registered. Please login instead or use another email")
+                                } else if (error.code === 'auth/invalid-email') {
+                                    toast.error('The email address is not valid.')
+                                } else {
+                                    toast.error(error.message);
+                                }
+                                return;
+                            });
+                    });
+
+
+                //updating the user profile
+
             })
-            .catch(error =>{
-                console.log(error);
-                toast.error(error.message);
-                return;
+            .catch(error => {
+                // console.log(error);
+                if (error.code === 'auth/email-already-in-use') {
+                    toast.error("This email is already registered. Please login instead or use another email")
+                } else if (error.code === 'auth/invalid-email') {
+                    toast.error('The email address is not valid.')
+                } else {
+                    toast.error(error.message);
+                }
             });
     };
 
-    const handleEye = (e) =>{
+    const handleEye = (e) => {
         e.preventDefault();
         setEye(!eye);
     };
@@ -51,20 +107,22 @@ const Register = () => {
 
                     {/* Photo field */}
                     <label className="label font-bold">Provide Image</label>
-                    <input type="file" className="file-input border border-gray-300 text-[12px] text-gray-500 w-full rounded-xl" placeholder="Upload your image here" {...register("image", { required: true})} />
-                    {errors.name?.type === "required" && <p className='text-red-500'>Image is required</p>}
+                    <input type="file" className="file-input border border-gray-300 text-[12px] text-gray-500 w-full rounded-xl" placeholder="Upload your image here" {...register("image", { required: true })} />
+                    {errors.photo?.type === "required" && <p className='text-red-500'>Image is required</p>}
 
                     {/* email field */}
                     <label className="label font-bold">Email</label>
                     <input type="email" className="input w-full rounded-xl" placeholder="Email" {...register("email", { required: true })} />
                     {errors.email?.type === 'required' && <p className="text-red-500">Email is required</p>}
-                    
+
                     <label className="label font-bold text-left">Password</label>
                     <div className='relative'>
                         {/* Pasword Field */}
-                        <input type={eye ? "text" : "password"} className="input text-[16px] w-full rounded-xl" placeholder="Password" {...register("password", { required: true, 
+                        <input type={eye ? "text" : "password"} className="input text-[16px] w-full rounded-xl" placeholder="Password" {...register("password", {
+                            required: true,
                             minLength: 6,
-                            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/ })} />
+                            pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/
+                        })} />
                         <button className="absolute top-2 text-xl right-4" onClick={handleEye}>{eye ? <FaEyeSlash className="trnasition-all duration-150 ease-linear"></FaEyeSlash> : <FaEye></FaEye>}</button>
                         {errors.password?.type === 'required' && <p className="text-red-500">Password is required</p>}
                         {errors.password?.type === 'minLength' && <p className="text-red-500">Password must be at least 6 character or longer</p>}
