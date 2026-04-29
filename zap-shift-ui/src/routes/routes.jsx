@@ -17,6 +17,8 @@ import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import RiderForm from "../beArider/RiderForm";
 import Loader from "../pages/shared/Loader";
 import ApproveRiders from "../pages/Dashboard/ApproveRiders/ApproveRiders";
+import UserManagement from "../pages/Dashboard/Usermanagement/UserManagement";
+import AdminLayout from "../layouts/AdminLayout";
 
 const routes = createBrowserRouter([
     {
@@ -51,7 +53,8 @@ const routes = createBrowserRouter([
             {path: 'payment-success', Component: PaymentSuccess},
             {path: 'payment-cancelled', Component: PaymentCancelled},
             {path: 'payment-history', Component: PaymentHistory},
-            {path: 'approve-riders', Component: ApproveRiders}
+            {path: 'approve-riders', element: <AdminLayout><ApproveRiders></ApproveRiders></AdminLayout>},
+            {path: 'user-management', element: <AdminLayout><UserManagement></UserManagement></AdminLayout>}
         ]
     }
 ]);

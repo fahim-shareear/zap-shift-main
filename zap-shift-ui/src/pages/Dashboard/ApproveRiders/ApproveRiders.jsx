@@ -74,7 +74,7 @@ const ApproveRiders = () => {
 
     return (
         <div>
-            <h1 className="font-bold text-2xl ml-5">Riders Approval Page {riders.length}</h1>
+            <h1 className="font-bold text-2xl ml-5">Riders Pending Application: {riders.length}</h1>
             <div className="ml-5">
                 <div className="overflow-x-auto">
                     <table className="table table-zebra md:max-w-7xl mx-auto">

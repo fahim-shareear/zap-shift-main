@@ -3,8 +3,13 @@ import { Link, NavLink, Outlet } from 'react-router';
 import { FaBoxArchive } from "react-icons/fa6";
 import { MdOutlinePayment } from "react-icons/md";
 import { TbBikeFilled } from "react-icons/tb";
+import { FaUserAlt } from 'react-icons/fa';
+import useRole from '../hooks/useRole';
 
 const DashboardLayout = () => {
+    const { role } = useRole();
+
+
     return (
         <div className="drawer lg:drawer-open">
             <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -27,6 +32,9 @@ const DashboardLayout = () => {
                     {/* Sidebar content here */}
                     <ul className="menu w-full grow">
                         {/* List item */}
+
+
+
                         <li>
                             <Link className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Homepage" to="/">
                                 {/* Home icon */}
@@ -34,6 +42,21 @@ const DashboardLayout = () => {
                                 <span className="is-drawer-close:hidden">Homepage</span>
                             </Link>
                         </li>
+
+
+                        {
+                            role === 'admin' && <>
+                                <li>
+                                    <Link className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Users Management" to="/dashboard/user-management">
+                                        {/* Home icon */}
+                                        <span>
+                                            <FaUserAlt />
+                                        </span>
+                                        <span className="is-drawer-close:hidden">Users</span>
+                                    </Link>
+                                </li>
+                            </>
+                        }
 
                         <li>
                             <NavLink to="/dashboard/my-parcels" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Parcels">
@@ -51,12 +74,16 @@ const DashboardLayout = () => {
                         </li>
 
 
-                        <li>
-                            <NavLink to="/dashboard/approve-riders" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Approve Riders">
-                                <span className="font-bold text-[17px]"><TbBikeFilled /></span>
-                                <span className='is-drawer-close:hidden'>Approve Riders</span>
-                            </NavLink>
-                        </li>
+                        {
+                            role === 'admin' && <>
+                                <li>
+                                    <NavLink to="/dashboard/approve-riders" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Approve Riders">
+                                        <span className="font-bold text-[17px]"><TbBikeFilled /></span>
+                                        <span className='is-drawer-close:hidden'>Approve Riders</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        }
 
                         {/* List item */}
                         <li>

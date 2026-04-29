@@ -65,21 +65,36 @@ async function run() {
         const paymentCollection = userMain.collection('payments');
         const riderCollection = userMain.collection("rider");
 
+
+        //middleware for verifying admin:
+        //must be user after verifying firebase token middleware
+        const verifyAdmin = async (req, res, next) =>{
+            const email = req.decoded_email;
+            const query = {email};
+            const user = await usersCollection.findOne(query);
+
+            if(!user || user.role !== 'admin'){
+                return res.status(403).send({message: 'Forbidded Access'});
+            }
+
+            next();
+        }
+
         //getting all the users api:
-        app.get("/users", async (req, res) => {
-            const cursor = usersCollection.find();
+        app.get("/users", verifyFirebase, async (req, res) => {
+            const cursor = usersCollection.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         });
 
         //posting api for creating users:
-        app.post("/users", async (req, res) => {
+        app.post("/users", verifyFirebase, async (req, res) => {
             const users = req.body;
             const query = { email: users.email };
             const existingUser = await usersCollection.findOne(query);
 
-            if(existingUser){
-                return res.send({message: "user exists"})
+            if (existingUser) {
+                return res.send({ message: "user exists" })
             };
 
             users.role = 'user';
@@ -87,6 +102,27 @@ async function run() {
 
             const result = await usersCollection.insertOne(users);
             res.send(result);
+        });
+
+        app.patch("/users/:id/role", verifyFirebase, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const roleInfo = req.body;
+            const query = { _id: new ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    role: roleInfo.role
+                }
+            }
+
+            const result = await usersCollection.updateOne(query, updatedDoc);
+            res.send(result);
+        });
+
+        app.get("/users/:email/role", async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await usersCollection.findOne(query);
+            res.send({ role: user?.role || "user" });
         });
 
         //getting the feedback data and posting also:
@@ -159,7 +195,7 @@ async function run() {
                 cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled?success=false`,
             });
 
-            // res.redirect(303, session.url);
+            res.redirect(303, session.url);
             // console.log(session);
             res.send({ url: session.url });
         });
@@ -245,15 +281,15 @@ async function run() {
 
 
         //rider related apis:
-        app.post('/riders', async(req, res)=>{
+        app.post('/riders', async (req, res) => {
             const rider = req.body;
             // console.log(rider)
-            
-            const query = {riderEmail: rider.riderEmail};
+
+            const query = { riderEmail: rider.riderEmail };
             const existingApplication = await riderCollection.findOne(query);
             // console.log(existingApplication);
 
-            if(existingApplication){
+            if (existingApplication) {
                 return res.status(409).send({
                     message: 'You have already applied to become a rider.'
                 })
@@ -266,39 +302,39 @@ async function run() {
             res.status(201).send(result);
         });
 
-        app.get('/riders', async(req, res)=>{
+        app.get('/riders', verifyFirebase, verifyAdmin, async (req, res) => {
             const query = {};
-            if(req.query.status){
+            if (req.query.status) {
                 query.status = req.query.status;
             }
-            const cursor = riderCollection.find(query).sort({createdAt: -1});
+            const cursor = riderCollection.find(query).sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         });
 
-        app.patch('/riders/:id', verifyFirebase, async(req, res)=>{
+        app.patch('/riders/:id', verifyFirebase, verifyAdmin, async (req, res) => {
             const status = req.body.status;
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
 
             const riderApplication = await riderCollection.findOne(query);
 
-            if(!riderApplication){
-                return res.status(404).send({message: "Rider Application not found"});
+            if (!riderApplication) {
+                return res.status(404).send({ message: "Rider Application not found" });
             };
 
 
             const updateDoc = {
-                $set:{
+                $set: {
                     status: status
                 }
             };
 
-            if(status === 'approved'){
+            if (status === 'approved') {
                 const userEmail = riderApplication.riderEmail;
-                const userFilter = {email: userEmail};
+                const userFilter = { email: userEmail };
                 const userUpdate = {
-                    $set:{
+                    $set: {
                         role: 'rider'
                     }
                 };
@@ -310,9 +346,9 @@ async function run() {
             res.send(result);
         });
 
-        app.delete('/riders/:id', verifyFirebase, async(req, res)=>{
+        app.delete('/riders/:id', verifyFirebase, async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await riderCollection.deleteOne(query);
             res.send(result)
         })

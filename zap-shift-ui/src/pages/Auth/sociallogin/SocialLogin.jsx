@@ -12,8 +12,11 @@ const SocialLogin = () => {
 
     const googleLogin = () => {
         popupLogin()
-            .then((result) => {
+            .then(async (result) => {
                 // console.log(result.user);
+                const user = result.user;
+
+                const token = await user.getIfToken();
 
                 const userInfo = {
                     email: result.user.email,
@@ -21,11 +24,15 @@ const SocialLogin = () => {
                     photoURL: result.user.photoURL,
                 };
 
-                axiosSecure.post('/users', userInfo)
+                axiosSecure.post('/users', userInfo,{
+                    headers:{
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                     .then(res => {
                         // console.log("Saving social login data to database:", res.data);
-                        toast.success(`Welcome ${res.displayName}.`);
                         navigate(location.state || '/');
+                        toast.success(`Welcome ${res.displayName}.`);
                     });
             })
             .catch(error => {
