@@ -16,23 +16,23 @@ const SocialLogin = () => {
                 // console.log(result.user);
                 const user = result.user;
 
-                const token = await user.getIfToken();
+                // const token = await user.getIdToken();
 
                 const userInfo = {
-                    email: result.user.email,
-                    displayName: result.user.displayName,
-                    photoURL: result.user.photoURL,
-                };
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL
+                }
 
                 axiosSecure.post('/users', userInfo,{
-                    headers:{
-                        Authorization: `Bearer ${token}`
+                    headers: {
+                        Authorization: `Bearer ${user?.accessToken}`
                     }
                 })
-                    .then(res => {
+                    .then(() => {
                         // console.log("Saving social login data to database:", res.data);
-                        navigate(location.state || '/');
-                        toast.success(`Welcome ${res.displayName}.`);
+                        navigate(location.state?.from || '/');
+                        toast.success(`Welcome ${user.displayName}.`);
                     });
             })
             .catch(error => {

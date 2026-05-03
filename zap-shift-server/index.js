@@ -81,14 +81,29 @@ async function run() {
         }
 
         //getting all the users api:
-        app.get("/users", verifyFirebase, async (req, res) => {
-            const cursor = usersCollection.find().sort({ createdAt: -1 });
+        app.get("/users", verifyFirebase, verifyAdmin, async (req, res)=>{
+            const searchText = req.query.search;
+            const query = {};
+
+            if(searchText){
+                query.$or = [
+                    {displayName: {$regex: searchText, $options: "i"}},
+                    {email: {$regex: searchText, $options: "i"}},
+                ]
+            };
+
+            const cursor = usersCollection.find(query).sort({createdAt: -1});
             const result = await cursor.toArray();
-            res.send(result);
+
+            if(!result){
+                return res.status(404).send({message: "User not available"});
+            }
+
+            return res.send(result);
         });
 
         //posting api for creating users:
-        app.post("/users", verifyFirebase, async (req, res) => {
+        app.post("/users",  async (req, res) => {
             const users = req.body;
             const query = { email: users.email };
             const existingUser = await usersCollection.findOne(query);

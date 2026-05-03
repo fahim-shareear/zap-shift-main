@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
 import SocialLogin from '../sociallogin/SocialLogin';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const [eye, setEye] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
     const { signInUser } = useAuth();
     const { handleSubmit,
         register,
@@ -20,10 +23,31 @@ const Login = () => {
     const handleLogin = (data) => {
         signInUser(data.email, data.password)
             .then(result => {
-                console.log(result.user);
+                // console.log(result.user);
+                navigate(location.state?.from.pathname || "/");
+                toast.success(`Welcome to ZapShift ${result.user.displayName}`, {
+                    posiiton: "top-center",
+                    duration: 3000,
+                    style: {
+                        background: "green",
+                        color: "white",
+                        font: "bold",
+                        text: "16px"
+                    }
+                });
             })
             .catch(error => {
-                console.log(error);
+                // console.log(error);
+                toast.error(`Something went wrong ${error.code}`, {
+                    position: "top-center",
+                    duration: 3000,
+                    style: {
+                        background: "red",
+                        color: "white",
+                        font: "bold",
+                        text: "16px"
+                    }
+                })
             })
     };
 

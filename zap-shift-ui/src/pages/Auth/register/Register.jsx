@@ -57,7 +57,7 @@ const Register = () => {
 
                         updateUserProfile(userProfile)
                             .then(() => {
-                                navigate(location.state || '/');
+                                navigate(location.state?.from?.pathname || '/');
                             })
                             .catch(error => {
                                 if (error.code === 'auth/email-already-in-use') {
