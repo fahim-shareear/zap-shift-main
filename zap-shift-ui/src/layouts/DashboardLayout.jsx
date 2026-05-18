@@ -3,7 +3,9 @@ import { Link, NavLink, Outlet } from 'react-router';
 import { FaBoxArchive } from "react-icons/fa6";
 import { MdOutlinePayment } from "react-icons/md";
 import { TbBikeFilled } from "react-icons/tb";
-import { FaUserAlt } from 'react-icons/fa';
+import { FaTasks, FaUserAlt } from 'react-icons/fa';
+import { RiEBike2Fill } from "react-icons/ri";
+import { SiGoogletasks } from "react-icons/si";
 import useRole from '../hooks/useRole';
 
 const DashboardLayout = () => {
@@ -80,6 +82,41 @@ const DashboardLayout = () => {
                                     <NavLink to="/dashboard/approve-riders" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Approve Riders">
                                         <span className="font-bold text-[17px]"><TbBikeFilled /></span>
                                         <span className='is-drawer-close:hidden'>Approve Riders</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        }
+
+                        {
+                            role === 'admin' && <>
+                                <li>
+                                    <NavLink to="/dashboard/assign-riders" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Assign Riders">
+                                        <span className="font-bold text-[17px]"><RiEBike2Fill /></span>
+                                        <span className='is-drawer-close:hidden'>Assign Riders</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        }
+
+                        {/* rider only routes */}
+                        {role === 'rider' &&
+                            <>
+                                <li>
+                                    <NavLink to="/dashboard/assigned-jobs" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Assigned Jobs">
+                                        <span className="font-bold text-[17px]"><FaTasks /></span>
+                                        <span className='is-drawer-close:hidden'>Assigned Jobs</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        }
+
+
+                        {role === 'rider' &&
+                            <>
+                                <li>
+                                    <NavLink to="/dashboard/completed-jobs" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Completed Jobs">
+                                        <span className="font-bold text-[17px]"><SiGoogletasks /></span>
+                                        <span className='is-drawer-close:hidden'>Completed Tasks</span>
                                     </NavLink>
                                 </li>
                             </>

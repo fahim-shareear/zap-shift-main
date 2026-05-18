@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import useAuth from '../../../hooks/useAuth';
 import { FaUserShield } from "react-icons/fa6";
 import { HiUserRemove } from "react-icons/hi";
+import { MdDelete } from "react-icons/md";
 import Swal from 'sweetalert2';
 
 const UserManagement = () => {
@@ -34,20 +35,22 @@ const UserManagement = () => {
                 if (res.data.modifiedCount) {
                     Swal.fire({
                         title: "Are you sure?",
-                        text: `You want to ${users.displayName} Admin?`,
+                        text: `You want to make ${users.displayName} Admin?`,
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
                         confirmButtonText: "Confirm"
                     }).then((result) => {
-                        if (result.isConfirmed) Swal.fire({
-                            title: "Success",
-                            text: `${users.displayName} has been made Admin.`,
-                            icon: "success"
-                        });
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: "Success",
+                                text: `${users.displayName} has been made Admin.`,
+                                icon: "success"
+                            });
+                            refetch();
+                        }
                     });
-                    refetch();
                 }
             })
     };
@@ -59,22 +62,51 @@ const UserManagement = () => {
                 if (res.data.modifiedCount) {
                     Swal.fire({
                         title: "Are you sure?",
-                        text: `You want to ${users.displayName} remove from Admin?`,
+                        text: `You want to remove ${users.displayName} from Admin?`,
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
                         confirmButtonText: "Confirm"
                     }).then((result) => {
-                        if (result.isConfirmed) Swal.fire({
-                            title: "Success",
-                            text: `${users.displayName} has been removed from Admin.`,
-                            icon: "success"
-                        });
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: "Success",
+                                text: `${users.displayName} has been removed from Admin.`,
+                                icon: "success"
+                            });
+                            refetch();
+                        }
                     });
-                    refetch();
                 }
             })
+    };
+
+    const removeUser = (users) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: `You want to remove ${users.displayName} from the Platform?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // ✅ NOW make the delete request
+                axiosSecure.delete(`/users/${users._id}`)
+                    .then(res => {
+                        if (res.data.deletedCount) {
+                            Swal.fire({
+                                title: "Success",
+                                text: `${users.displayName} has been removed from the platform`,
+                                icon: "success"
+                            });
+                            refetch();
+                        }
+                    });
+            }
+        });
     };
 
     // Only block UI on very first load, not on every search
@@ -168,6 +200,10 @@ const UserManagement = () => {
                                                     :
                                                     <button onClick={() => handleAdAdmin(user)} className='btn font-bold text-[18px] bg-green-500 text-white'><FaUserShield /></button>
                                                 }
+                                                <button
+                                                    onClick={() => removeUser(user)}
+                                                    className="btn btn-secondary font-bold text-[18px] text-primary"
+                                                ><MdDelete /></button>
                                             </td>
                                         </tr>
                                     ))

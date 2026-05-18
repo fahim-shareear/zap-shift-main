@@ -35,6 +35,7 @@ const Register = () => {
 
                         //create user in the database
                         const userInfo = {
+                            uid: data.uid,
                             email: data.email,
                             displayName: data.name,
                             photoURL: photoURL

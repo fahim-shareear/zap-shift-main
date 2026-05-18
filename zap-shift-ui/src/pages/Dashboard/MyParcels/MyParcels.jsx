@@ -16,9 +16,20 @@ const MyParcels = () => {
         enabled: !!user?.email,
         queryFn: async () => {
             const res = await axiosSecure.get(`/parcels?email=${user.email}`);
+            // console.log(res.data);
+            // const parcelStatus = res.data.deliveryStatus.split('_').join(' ');
             return res.data;
         }
     });
+
+    const {data: transactions = []} = useQuery({
+        queryKey: ['transactions', user?.email],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/payments?email=${user?.email}`);
+            // console.log("Fetching transaction id:", res.data);
+            return res.data;
+        }
+    })
 
     const parcelDelete = (id) => {
         console.log(id);
@@ -84,6 +95,8 @@ const MyParcels = () => {
                         <th>Receiver Name</th>
                         <th>Payment Status</th>
                         <th>Delivery Status</th>
+                        <th>Tracking ID</th>
+                        <th>Transaction ID</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -101,7 +114,9 @@ const MyParcels = () => {
                                     <button className="btn btn-secondary btn-small text-black" onClick={() =>hadlePayment(parcel)}>Pay</button>
                                 }
                             </td>
-                            <td>Delivery status</td>
+                            <td className='capitalize text-red-400 font-bold'>{parcel.deliveryStatus?.split('-').join(' ')}</td>
+                            <td>{parcel.trackingId}</td>
+                            <td>{transactions.find(transaction => transaction.parcelId === parcel._id)?.transactionId}</td>
                             <td>
                                 <button className='btn btn-square'>
                                     <FaEye />

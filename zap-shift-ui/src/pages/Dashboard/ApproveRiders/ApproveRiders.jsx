@@ -84,7 +84,8 @@ const ApproveRiders = () => {
                                 <th>SL No</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Status</th>
+                                <th>Application Status</th>
+                                <th>Working Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -97,6 +98,7 @@ const ApproveRiders = () => {
                                         <td>{rider.riderName}</td>
                                         <td>{rider.riderEmail}</td>
                                         <td className={`capitalize ${rider.status === 'approved' ? 'text-green-500' : 'text-red-500'}`}>{rider.status}</td>
+                                        <td className={`capitalize ${rider.status === 'approved' ? 'text-green-500' : 'text-red-500'}`}>{rider.workStatus}</td>
                                         <td>
                                             {/* You can open the modal using document.getElementById('ID').showModal() method */}
                                             {/* Trigger Button - Using unique ID */}

@@ -19,6 +19,10 @@ import Loader from "../pages/shared/Loader";
 import ApproveRiders from "../pages/Dashboard/ApproveRiders/ApproveRiders";
 import UserManagement from "../pages/Dashboard/Usermanagement/UserManagement";
 import AdminLayout from "../layouts/AdminLayout";
+import AssignRiders from "../pages/Dashboard/AssignRiders/AssignRiders";
+import Riderlayouts from "../layouts/Riderlayouts";
+import AssignedJobs from "../pages/Dashboard/AssignedJobs/AssignedJobs";
+import CompletedTasks from "../pages/Dashboard/AssignedJobs/CompletedJobs/CompletedTasks";
 
 const routes = createBrowserRouter([
     {
@@ -54,7 +58,10 @@ const routes = createBrowserRouter([
             {path: 'payment-cancelled', Component: PaymentCancelled},
             {path: 'payment-history', Component: PaymentHistory},
             {path: 'approve-riders', element: <AdminLayout><ApproveRiders></ApproveRiders></AdminLayout>},
-            {path: 'user-management', element: <AdminLayout><UserManagement></UserManagement></AdminLayout>}
+            {path: 'user-management', element: <AdminLayout><UserManagement></UserManagement></AdminLayout>},
+            {path: 'assign-riders', element: <AdminLayout><AssignRiders></AssignRiders></AdminLayout>},
+            {path: 'assigned-jobs', element: <Riderlayouts><AssignedJobs></AssignedJobs></Riderlayouts>},
+            {path: 'completed-jobs', element: <Riderlayouts><CompletedTasks></CompletedTasks></Riderlayouts>},
         ]
     }
 ]);

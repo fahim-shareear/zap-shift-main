@@ -2,10 +2,24 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
+const dns = require('dns').promises;
 const port = process.env.PORT || 3000;
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const crypto = require("crypto");
 const admin = require("firebase-admin");
+
+async function checkInternetConnection() {
+    try {
+        await dns.resolve4('8.8.8.8');
+        console.log("Internet connection detected");
+        return true;
+    } catch (err) {
+        console.error("No internet connection detected", err.message);
+        return false;
+    };
+};
+
+
 
 //middleware starting:
 const app = express();
@@ -33,6 +47,7 @@ const verifyFirebase = async (req, res, next) => {
 
 const uri = process.env.MONGO_URI
 const serviceAccount = require("./zap-shift-firebase-sdk-key.json");
+const { rejects } = require('assert');
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -57,6 +72,32 @@ function generateTrackingId() {
 
 async function run() {
     try {
+
+        const isConnected = await checkInternetConnection();
+
+        if (!isConnected) {
+            console.warn("Internet Connection is off")
+        } else {
+            console.log("Internet connection on");
+        };
+
+        try {
+            await Promise.race(
+                [
+                    client.connect(),
+                    new Promise((_, reject) => {
+                        setTimeout(() => reject(new Error("MongoDB connection timeout")), 10000)
+                    })
+                ]
+            );
+            console.log("Connected to MongoDB");
+        } catch (err) {
+            console.error("MongoDB Connection failed", err.message);
+            if (!isConnected) {
+                console.log("Check your internet connection");
+            };
+        };
+
         await client.connect();
         const userMain = client.db("zapShift");
         const usersCollection = userMain.collection("users");
@@ -64,46 +105,69 @@ async function run() {
         const parcelsCollection = userMain.collection("parcels");
         const paymentCollection = userMain.collection('payments');
         const riderCollection = userMain.collection("rider");
+        const trackingCollection = userMain.collection("trackings");
+        const payrollCollection = userMain.collection("payroll");
 
 
         //middleware for verifying admin:
         //must be user after verifying firebase token middleware
-        const verifyAdmin = async (req, res, next) =>{
+        const verifyAdmin = async (req, res, next) => {
             const email = req.decoded_email;
-            const query = {email};
+            const query = { email };
             const user = await usersCollection.findOne(query);
 
-            if(!user || user.role !== 'admin'){
-                return res.status(403).send({message: 'Forbidded Access'});
+            if (!user || user.role !== 'admin') {
+                return res.status(403).send({ message: 'Forbidded Access' });
             }
 
             next();
-        }
+        };
+
+        //tracking log functionality creation:
+        const logTracking = async (trackingId, status) =>{
+            const log = {
+                trackingId,
+                status,
+                details: status.split("-").join(" "),
+                createdAt: new Date().toLocaleDateString()
+            };
+
+            const result = await trackingCollection.insertOne(log);
+            return result;
+        };
 
         //getting all the users api:
-        app.get("/users", verifyFirebase, verifyAdmin, async (req, res)=>{
+        app.get("/users", verifyFirebase, verifyAdmin, async (req, res) => {
             const searchText = req.query.search;
             const query = {};
 
-            if(searchText){
+            if (searchText) {
                 query.$or = [
-                    {displayName: {$regex: searchText, $options: "i"}},
-                    {email: {$regex: searchText, $options: "i"}},
+                    { displayName: { $regex: searchText, $options: "i" } },
+                    { email: { $regex: searchText, $options: "i" } },
                 ]
             };
 
-            const cursor = usersCollection.find(query).sort({createdAt: -1});
+            const cursor = usersCollection.find(query).sort({ createdAt: -1 });
             const result = await cursor.toArray();
 
-            if(!result){
-                return res.status(404).send({message: "User not available"});
+            if (!result) {
+                return res.status(404).send({ message: "User not available" });
             }
 
             return res.send(result);
         });
 
+        app.delete("/users/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+
+            const result = await usersCollection.deleteOne(query);
+            res.send(result);
+        });
+
         //posting api for creating users:
-        app.post("/users",  async (req, res) => {
+        app.post("/users", async (req, res) => {
             const users = req.body;
             const query = { email: users.email };
             const existingUser = await usersCollection.findOne(query);
@@ -155,11 +219,58 @@ async function run() {
             res.send(result);
         });
 
+        app.get("/parcels/riders", async (req, res) => {
+            const { riderEmail, deliveryStatus } = req.query;
+            const query = {};
+            if (riderEmail) {
+                query.riderEmail = riderEmail;
+            };
+
+            if (deliveryStatus) {
+                const statusArray = Array.isArray(deliveryStatus) ? deliveryStatus : JSON.parse(deliveryStatus);
+
+                query.deliveryStatus = {$in: statusArray};
+            };
+
+            const cursor = parcelsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.delete("/parcels/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await parcelsCollection.deleteOne(query);
             res.send(result);
+        });
+
+        app.patch("/parcels/:id", async (req, res) => {
+            const { riderId, riderName, riderEmail } = req.body;
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+
+            const updatedDoc = {
+                $set: {
+                    deliveryStatus: "Rider Assigned",
+                    riderId: riderId,
+                    riderName: riderName,
+                    riderEmail: riderEmail,
+
+                }
+            };
+
+            const result = await parcelsCollection.updateOne(query, updatedDoc);
+
+            //updating rider information:
+            const riderQuery = { _id: new ObjectId(riderId) };
+            const riderUpdatedDoc = {
+                $set: {
+                    workStatus: "In Delivery"
+                }
+            };
+
+            const riderResult = await riderCollection.updateOne(riderQuery, riderUpdatedDoc);
+            res.send(riderResult, result);
         });
 
         app.get("/parcels/:id", async (req, res) => {
@@ -171,15 +282,45 @@ async function run() {
 
         app.get('/parcels', async (req, res) => {
             const query = {};
-            const { email } = req.query;
+            const { email, deliveryStatus } = req.query;
             if (email) {
                 query.senderEmail = email;
+            };
+
+
+            if (deliveryStatus) {
+                query.deliveryStatus = deliveryStatus;
             };
 
             const options = { sort: { createdAt: -1 } }
 
             const cursor = parcelsCollection.find(query, options);
             const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        //updating info aftet rider accepts the parcel:
+        app.patch('/parcels/:id/status', async (req, res) => {
+            const { deliveryStatus, riderId } = req.body;
+            const query = {_id: new ObjectId(req.params.id)};
+            const updatedDoc = {
+                $set: {
+                    deliveryStatus: deliveryStatus
+                }
+            };
+
+            if(deliveryStatus === "delivered" || deliveryStatus === "pending-pickup"){
+                const riderQuery = {_id: new ObjectId(riderId)};
+                const riderUpdatedDoc ={
+                    $set:{
+                        workStatus: "available"
+                    }
+                };
+
+                const riderResult = await riderCollection.updateOne(riderQuery, riderUpdatedDoc)
+            };
+
+            const result = await parcelsCollection.updateOne(query, updatedDoc);
             res.send(result);
         });
 
@@ -210,7 +351,7 @@ async function run() {
                 cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled?success=false`,
             });
 
-            res.redirect(303, session.url);
+            // res.redirect(303, session.url);
             // console.log(session);
             res.send({ url: session.url });
         });
@@ -242,6 +383,7 @@ async function run() {
                 const update = {
                     $set: {
                         paymentStatus: 'paid',
+                        deliveryStatus: 'pending-pickup',
                         createdAt: new Date(),
                         trackingId: trackingId
                     }
@@ -318,10 +460,24 @@ async function run() {
         });
 
         app.get('/riders', verifyFirebase, verifyAdmin, async (req, res) => {
+            const { status, district, workStatus } = req.query;
+
             const query = {};
-            if (req.query.status) {
-                query.status = req.query.status;
-            }
+
+
+            if (status) {
+                query.status = status;
+            };
+
+            if (district) {
+                query.district = district
+            };
+
+            if (workStatus) {
+                query.workStatus = workStatus;
+            };
+
+
             const cursor = riderCollection.find(query).sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
@@ -341,7 +497,8 @@ async function run() {
 
             const updateDoc = {
                 $set: {
-                    status: status
+                    status: status,
+                    workStatus: 'available'
                 }
             };
 
@@ -365,8 +522,139 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await riderCollection.deleteOne(query);
-            res.send(result)
-        })
+            res.send(result);
+        });
+
+
+        //adding payroll related api's:
+        app.post("/payroll/add-commissions", verifyFirebase, async(req, res) =>{
+            try{
+                const {riderEmail, riderName, totalCommission, parcelCount, submittedDate, month} = req.body;
+
+                if(!riderEmail || totalCommission === undefined){
+                    return res.status(400).send({
+                        success: false,
+                        message: "Missing required fields"
+                    });
+                };
+
+                const existingPayroll = await payrollCollection.findOne({
+                    riderEmail: riderEmail,
+                    month: month
+                });
+
+                if(existingPayroll){
+                    return res.status(409).send({
+                        success: false,
+                        message: "Commission already submitted for this month"
+                    });
+                };
+
+                const payrollRecord = {
+                    riderEmail: riderEmail,
+                    riderName: riderName,
+                    totalCommission: totalCommission,
+                    parcelCount: parcelCount,
+                    submittedDate: submittedDate,
+                    month: month,
+                    status: 'pending',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                };
+                
+                const result = await payrollCollection.insertOne(payrollRecord);
+
+                if(result.insertedId){
+                    return res.status(201).send({
+                        success: true,
+                        message: "Commission submitted successfully",
+                        payrollId: result.insertedId
+                    });
+                };
+
+                return res.status(400).send({
+                    success: false,
+                    message: "Failed to insert paryroll record"
+                });
+
+                 
+            }catch(error){
+                console.log("Payroll error", error);
+                res.status(500).send({
+                    success: false,
+                    message: "Failed to submit commission.",
+                    error: error.message
+                });
+            };
+        });
+
+        app.get("/payroll", verifyFirebase, verifyAdmin, async(req, res)=>{
+            try{
+                const {riderEmail, month, status} = req.query;
+                const query = {};
+                if(riderEmail) query.riderEmail = riderEmail;
+                if(month) query.month = month;
+                if(status) query.status = status;
+
+                const cursor = payrollCollection.find(query).sort({createdAt: -1});
+                const result = await cursor.toArray();
+                res.send(result);
+            }catch(error){
+                console.log("Error fetching payroll", error);
+                res.status(500).send({message: "Failed to fetch paryroll records"});
+            };
+        });
+
+        //get paryroll for specific rider:
+        app.get("/payroll/:riderEmail", verifyFirebase, async(req, res)=>{
+            try{
+                const riderEmail = req.params.riderEmail;
+                
+                if(riderEmail !== req.decoded_email){
+                    return res.status(403).send({message: "Forbiddedn Access"});
+                };
+
+                const cursor = payrollCollection.find({riderEmail: riderEmail}).sort({createdAt: -1});
+                const result = await cursor.toArray();
+
+                res.send(result);
+
+            }catch(error){
+                console.log("Error fetching rider payroll", error);
+                res.status(500).send({message: "Failed to fetch paryroll"});
+            };
+        });
+
+        //updating payroll status admin only:
+        app.patch("/payroll/:id/status", verifyFirebase, verifyAdmin, async(req, res)=>{
+            try{
+                const payrollId = req.params.id;
+                const {status} = req.body;
+                const query = {_id: new ObjectId(payrollId)};
+
+                const updatedDoc = {
+                    $set:{
+                        status: status,
+                        updatedAt: new Date()
+                    }
+                };
+
+                const result = await payrollCollection.updateOne(query, updatedDoc);
+                if(result.modifiedCount === 0){
+                    return res.status(404).send({message: "Payroll record not found"});
+                };
+
+                res.send({
+                    success: true,
+                    message: "Payroll updated successfully."
+                });
+            }catch(error){
+                console.log("Error updating payroll", error);
+                res.status(500).send({message: "Failed to update payroll status"});
+            };
+        });
+
+
 
 
 
