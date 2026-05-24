@@ -73,31 +73,6 @@ function generateTrackingId() {
 async function run() {
     try {
 
-        const isConnected = await checkInternetConnection();
-
-        if (!isConnected) {
-            console.warn("Internet Connection is off")
-        } else {
-            console.log("Internet connection on");
-        };
-
-        try {
-            await Promise.race(
-                [
-                    client.connect(),
-                    new Promise((_, reject) => {
-                        setTimeout(() => reject(new Error("MongoDB connection timeout")), 10000)
-                    })
-                ]
-            );
-            console.log("Connected to MongoDB");
-        } catch (err) {
-            console.error("MongoDB Connection failed", err.message);
-            if (!isConnected) {
-                console.log("Check your internet connection");
-            };
-        };
-
         await client.connect();
         const userMain = client.db("zapShift");
         const usersCollection = userMain.collection("users");
@@ -125,15 +100,15 @@ async function run() {
 
         //tracking log functionality creation:
         const logTracking = async (trackingId, status) =>{
-            const log = {
-                trackingId,
-                status,
-                details: status.split("-").join(" "),
-                createdAt: new Date().toLocaleDateString()
-            };
+                const log = {
+                    trackingId: trackingId,
+                    status: status,
+                    details: status.split("-").join(" "),
+                    createdAt: new Date()
+                };
 
-            const result = await trackingCollection.insertOne(log);
-            return result;
+                const result = await trackingCollection.insertOne(log);
+                return result;
         };
 
         //getting all the users api:
@@ -245,13 +220,13 @@ async function run() {
         });
 
         app.patch("/parcels/:id", async (req, res) => {
-            const { riderId, riderName, riderEmail } = req.body;
+            const { riderId, riderName, riderEmail, trackingId } = req.body;
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
 
             const updatedDoc = {
                 $set: {
-                    deliveryStatus: "Rider Assigned",
+                    deliveryStatus: "rider-assigned",
                     riderId: riderId,
                     riderName: riderName,
                     riderEmail: riderEmail,
@@ -270,6 +245,9 @@ async function run() {
             };
 
             const riderResult = await riderCollection.updateOne(riderQuery, riderUpdatedDoc);
+
+            logTracking(trackingId, "rider-assigned");
+
             res.send(riderResult, result);
         });
 
@@ -301,7 +279,7 @@ async function run() {
 
         //updating info aftet rider accepts the parcel:
         app.patch('/parcels/:id/status', async (req, res) => {
-            const { deliveryStatus, riderId } = req.body;
+            const { deliveryStatus, riderId, trackingId } = req.body;
             const query = {_id: new ObjectId(req.params.id)};
             const updatedDoc = {
                 $set: {
@@ -321,6 +299,7 @@ async function run() {
             };
 
             const result = await parcelsCollection.updateOne(query, updatedDoc);
+            logTracking(trackingId, deliveryStatus);
             res.send(result);
         });
 
@@ -406,6 +385,10 @@ async function run() {
 
                 if (session.payment_status === 'paid') {
                     const resultPayment = await paymentCollection.insertOne(payment);
+
+                    logTracking(trackingId, 'pending-pickup');
+
+
                     res.send({
                         success: true,
                         modifyParcel: result,
@@ -653,6 +636,14 @@ async function run() {
                 res.status(500).send({message: "Failed to update payroll status"});
             };
         });
+
+        //parcel tracking related api:
+        app.get("/trackings/:trackingId/logs", async (req, res) =>{
+            const trackingId = req.params.trackingId;
+            const query = {trackingId};
+            const result = await trackingCollection.find(query).toArray();
+            res.send(result);
+        })
 
 
 

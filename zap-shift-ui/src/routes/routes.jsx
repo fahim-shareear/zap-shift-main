@@ -23,6 +23,8 @@ import AssignRiders from "../pages/Dashboard/AssignRiders/AssignRiders";
 import Riderlayouts from "../layouts/Riderlayouts";
 import AssignedJobs from "../pages/Dashboard/AssignedJobs/AssignedJobs";
 import CompletedTasks from "../pages/Dashboard/AssignedJobs/CompletedJobs/CompletedTasks";
+import Pricing from "../pages/home/Pricing";
+import TrackParcel from "../pages/Trackparcel/TrackParcel";
 
 const routes = createBrowserRouter([
     {
@@ -35,12 +37,16 @@ const routes = createBrowserRouter([
                 loader: () => fetch("/serviceCenter.json").then(res => res.json())
             },
             {path: "about-us", Component: About},
+            {path: "pricing", Component: Pricing,
+                loader: () => fetch("/serviceCenter.json").then(res => res.json())
+            },
             {path: "send-a-parcel", element: <PrivateRoutes><SendAParcel></SendAParcel></PrivateRoutes>,
                 loader: () => fetch("/serviceCenter.json").then(res => res.json())
             },
             {path: "be-a-rider", element: <PrivateRoutes><RiderForm></RiderForm></PrivateRoutes>,
                 loader: () => fetch("/serviceCenter.json").then(res => res.json())
-            }
+            },
+            {path: "parcel-track/:trackingId", Component: TrackParcel}
         ]
     },
     {

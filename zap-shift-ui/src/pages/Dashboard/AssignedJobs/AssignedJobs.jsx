@@ -16,7 +16,7 @@ const AssignedJobs = () => {
             const res = await axiosSecure.get("/parcels/riders", {
                 params: {
                     riderEmail: user.email,
-                    deliveryStatus: JSON.stringify(["Rider Assigned", "pick-up-in-progress", "picked-up"])
+                    deliveryStatus: JSON.stringify(["rider-assigned", "pick-up-in-progress", "picked-up"])
                 }
             });
             return res.data;
@@ -55,7 +55,8 @@ const AssignedJobs = () => {
         const message = statusMessage[status];
         const statusInfo = {
             deliveryStatus: status,
-            riderId: parcel.riderId
+            riderId: parcel.riderId,
+            trackingId: parcel.trackingId
         };
 
         Swal.fire({
@@ -124,7 +125,7 @@ const AssignedJobs = () => {
                                 <td>{parcel.receiverPhone}</td>
                                 <td>
                                     {
-                                        parcel.deliveryStatus === "Rider Assigned" ?
+                                        parcel.deliveryStatus === "rider-assigned" ?
                                             <>
                                                 <button
                                                     onClick={() => handleDeliveryStatusUpdate(parcel, "pick-up-in-progress")}

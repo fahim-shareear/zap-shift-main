@@ -22,7 +22,7 @@ const MyParcels = () => {
         }
     });
 
-    const {data: transactions = []} = useQuery({
+    const { data: transactions = [] } = useQuery({
         queryKey: ['transactions', user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/payments?email=${user?.email}`);
@@ -47,17 +47,17 @@ const MyParcels = () => {
                     .then(res => {
                         console.log(res.data);
                         if (res.data.deletedCount) {
-                             //refresh the ui
+                            //refresh the ui
                             refetch();
                             Swal.fire({
                                 title: "Success!",
                                 text: "Your order has been canceled.",
                                 icon: "success"
                             });
-                           
+
                         };
                     })
-                    .catch(error =>{
+                    .catch(error => {
                         console.log(error.message);
                         return
                     });
@@ -65,8 +65,8 @@ const MyParcels = () => {
         });
     };
 
-    const hadlePayment = async (parcel) =>{
-        if(!parcel) return
+    const hadlePayment = async (parcel) => {
+        if (!parcel) return
         const paymentInfo = {
             cost: parcel.cost,
             parcelId: parcel._id,
@@ -110,12 +110,19 @@ const MyParcels = () => {
                             <td>{parcel.receiverName}</td>
                             <td>
                                 {parcel.paymentStatus === 'paid' ?
-                                <span className='text-secondary btn btn-primary '>Paid</span>:
-                                    <button className="btn btn-secondary btn-small text-black" onClick={() =>hadlePayment(parcel)}>Pay</button>
+                                    <span className='text-secondary btn btn-primary '>Paid</span> :
+                                    <button className="btn btn-secondary btn-small text-black" onClick={() => hadlePayment(parcel)}>Pay</button>
                                 }
                             </td>
                             <td className='capitalize text-red-400 font-bold'>{parcel.deliveryStatus?.split('-').join(' ')}</td>
-                            <td>{parcel.trackingId}</td>
+
+                            <td>
+                                <Link to={`/parcel-track/${parcel.trackingId}`} className="font-bold text-primary bg-secondary rounded-xl shadow-md flex items-center gap-2 p-2">
+                                    <span className="text-xl"><FaEye></FaEye></span>
+                                    {parcel.trackingId}
+
+                                </Link>
+                            </td>
                             <td>{transactions.find(transaction => transaction.parcelId === parcel._id)?.transactionId}</td>
                             <td>
                                 <button className='btn btn-square'>

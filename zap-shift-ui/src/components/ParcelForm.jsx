@@ -64,7 +64,7 @@ const ParcelForm = () => {
             if (result.isConfirmed) {
                 axiosSecure.post("/parcels", data)
                     .then(res => {
-                        console.log("after saving parcel", res.data);
+                        // console.log("after saving parcel", res.data);
                         navigate('/dashboard/my-parcels')
                         if (res.data.insertedId) {
                             Swal.fire({
