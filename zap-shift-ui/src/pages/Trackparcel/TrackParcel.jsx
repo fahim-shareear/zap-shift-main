@@ -16,12 +16,12 @@ const TrackParcel = () => {
                 day: 'numeric',
                 year: 'numeric'
             }),
-            time: date.toLocaleTimeString('en-US', {
+            time: date.toLocaleDateString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true
             })
-        };
+        }
     };
 
     useEffect(() => {
@@ -39,9 +39,9 @@ const TrackParcel = () => {
             try {
                 // ✅ Ignore heartbeat
                 if (event.data.startsWith(':')) return;
-                
+
                 const data = JSON.parse(event.data);
-                
+
                 // ✅ Handle errors
                 if (data.error) {
                     setError(data.error);
@@ -68,6 +68,7 @@ const TrackParcel = () => {
         };
 
         return () => eventSource.close();
+
     }, [trackingId]);
 
     if (isLoading) {
