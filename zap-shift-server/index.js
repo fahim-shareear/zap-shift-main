@@ -189,7 +189,12 @@ async function run() {
         //parcel order collection endpoint:
         app.post("/parcels", async (req, res) => {
             const orders = req.body;
+            const trackingId = generateTrackingId();
             orders.createdAt = new Date();
+            orders.trackingId = trackingId;
+
+            logTracking(trackingId, 'parcel-created');
+
             const result = await parcelsCollection.insertOne(orders);
             res.send(result);
         });
@@ -362,7 +367,7 @@ async function run() {
                 const update = {
                     $set: {
                         paymentStatus: 'paid',
-                        deliveryStatus: 'pending-pickup',
+                        deliveryStatus: 'parcel-paid',
                         createdAt: new Date(),
                         trackingId: trackingId
                     }
@@ -387,7 +392,7 @@ async function run() {
                 if (session.payment_status === 'paid') {
                     const resultPayment = await paymentCollection.insertOne(payment);
 
-                    logTracking(trackingId, 'pending-pickup');
+                    logTracking(trackingId, 'parcel-paid');
 
 
                     res.send({
