@@ -657,20 +657,20 @@ async function run() {
             res.setHeader('Connection', 'keep-alive');
             res.setHeader('Access-Control-Allow-Origin', '*');
 
-            trackingCollection.find({trackingId}.toArray()
+
+            trackingCollection.find({trackingId}).toArray()
                 .then(logs =>{
-                    res.write(`data: ${JSON.stringify(logs)}\n\n`)
+                    res.write(`data: ${JSON.stringify(logs)}\n\n`);
                 })
                 .catch(err =>{
-                    res.write(`data: ${JSON.stringify({error: "Failed to fetch logs"})}\n\n`)
+                    res.write(`data: ${JSON.stringify({error: 'Failed to fetch logs'})}`)
                 })
-            );
 
             const heartbeat = setInterval(()=>{
                 res.write(`: heartbeat\n\n`);
             }, 15000);
 
-            const changeStrem = trackingCollection.watch([
+            const changeStream = trackingCollection.watch([
                 {$match: {"fullDocument.trackingId": trackingId}}
             ]);
 
