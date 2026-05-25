@@ -643,7 +643,60 @@ async function run() {
             const query = {trackingId};
             const result = await trackingCollection.find(query).toArray();
             res.send(result);
-        })
+        });
+
+        app.get('/trackings/:trackingId/stream', (req, res)=>{
+            const trackingId = req.params.trackingId;
+
+            if(!trackingId){
+                return res.status(400).send({message: "Tracking ID is required"});
+            };
+
+            res.setHeader('Content-Type', 'text/event-stream');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('Connection', 'keep-alive');
+            res.setHeader('Access-Control-Allow-Origin', '*');
+
+            trackingCollection.find({trackingId}.toArray()
+                .then(logs =>{
+                    res.write(`data: ${JSON.stringify(logs)}\n\n`)
+                })
+                .catch(err =>{
+                    res.write(`data: ${JSON.stringify({error: "Failed to fetch logs"})}\n\n`)
+                })
+            );
+
+            const heartbeat = setInterval(()=>{
+                res.write(`: heartbeat\n\n`);
+            }, 15000);
+
+            const changeStrem = trackingCollection.watch([
+                {$match: {"fullDocument.trackingId": trackingId}}
+            ]);
+
+            changeStream.on('change', (change)=>{
+                try{
+                    if(change.operationType === 'insert' || change.operationType === 'update'){
+                        res.write(`data: ${JSON.stringigy(change.fullDocument)}\n\n`);
+                    }
+                }catch(err){
+                    console.error('Change stream error', err);
+                    res.write(`data: ${JSON.stringigy({error: 'Connection Error'})}\n\n`);
+                }
+            });
+
+            res.on('close', () =>{
+                clearInterval(heartbeat);
+                changeStream.close();
+                res.send();
+            });
+
+            req.on('error', (err)=>{
+                console.error('Request error', err);
+                clearInterval(heartbeat);
+                changeStream.close();
+            });
+        });
 
 
 
