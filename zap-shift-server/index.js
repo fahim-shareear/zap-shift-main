@@ -371,6 +371,7 @@ async function run() {
 
                 // Creating payment history:
                 const payment = {
+                    sessionId: sessionId,
                     name: session.metadata.parcelName,
                     amount: session.amount_total / 100,
                     currency: session.currency,
