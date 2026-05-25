@@ -117,7 +117,7 @@ const MyParcels = () => {
                             <td className='capitalize text-red-400 font-bold'>{parcel.deliveryStatus?.split('-').join(' ')}</td>
 
                             <td>
-                                <Link to={`/parcel-track/${parcel.trackingId}`} className="font-bold text-primary bg-secondary rounded-xl shadow-md flex items-center gap-2 p-2">
+                                <Link to={`/parcel-track/${parcel.trackingId}`} className="flex gap-5 bg-secondary p-2 w-56 rounded-xl font-bold">
                                     <span className="text-xl"><FaEye></FaEye></span>
                                     {parcel.trackingId}
 
