@@ -12,7 +12,7 @@ const AssignRiders = () => {
     const { data: parcels = [], refetch: parcelRefetch } = useQuery({
         queryKey: ['parcels', 'pending-pickup'],
         queryFn: async () => {
-            const res = await axiosSecure.get('/parcels?deliveryStatus=pending-pickup')
+            const res = await axiosSecure.get('/parcels?deliveryStatus=parcel-paid')
             // console.log(res.data);
             return res.data
         }

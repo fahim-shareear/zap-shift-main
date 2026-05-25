@@ -137,12 +137,12 @@ const AssignedJobs = () => {
                                             :
                                             parcel.deliveryStatus === "pick-up-in-progress" ?
                                             <>
-                                                <span className='capitalize bg-secondary font-bold text-primary p-2 rounded-md'>parcel rejected</span>
-                                            </> :
-                                            <>
                                                 <span className='capitalize bg-secondary font-bold text-primary p-2 rounded-md'>parcel accepted</span>
                                             </>
-                                            
+                                            :
+                                            <>
+                                                <span className='capitalize bg-secondary font-bold text-primary p-2 rounded-md'>parcel rejected</span>
+                                            </>
                                     }
                                 </td>
                                 <td>

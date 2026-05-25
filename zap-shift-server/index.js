@@ -99,16 +99,26 @@ async function run() {
         };
 
         //tracking log functionality creation:
-        const logTracking = async (trackingId, status) =>{
-                const log = {
-                    trackingId: trackingId,
-                    status: status,
-                    details: status.split("-").join(" "),
-                    createdAt: new Date()
-                };
+        const logTracking = async (trackingId, status) => {
+            const existingLog = await trackingCollection.findOne({
+                trackingId: trackingId,
+                status: status,
+                createdAt: { $gte: new Date(Date.now() - 1000) }
+            });
 
-                const result = await trackingCollection.insertOne(log);
-                return result;
+            if (existingLog) {
+                return existingLog;
+            }
+
+            const log = {
+                trackingId: trackingId,
+                status: status,
+                details: status.split("-").join(" "),
+                createdAt: new Date()
+            };
+
+            const result = await trackingCollection.insertOne(log);
+            return result;
         };
 
         //getting all the users api:
@@ -209,10 +219,10 @@ async function run() {
             if (deliveryStatus) {
                 const statusArray = Array.isArray(deliveryStatus) ? deliveryStatus : JSON.parse(deliveryStatus);
 
-                query.deliveryStatus = {$in: statusArray};
+                query.deliveryStatus = { $in: statusArray };
             };
 
-            const cursor = parcelsCollection.find(query);
+            const cursor = parcelsCollection.find(query).sort({createdAt: -1});
             const result = await cursor.toArray();
             res.send(result);
         });
@@ -285,17 +295,17 @@ async function run() {
         //updating info aftet rider accepts the parcel:
         app.patch('/parcels/:id/status', async (req, res) => {
             const { deliveryStatus, riderId, trackingId } = req.body;
-            const query = {_id: new ObjectId(req.params.id)};
+            const query = { _id: new ObjectId(req.params.id) };
             const updatedDoc = {
                 $set: {
                     deliveryStatus: deliveryStatus
                 }
             };
 
-            if(deliveryStatus === "delivered" || deliveryStatus === "pending-pickup"){
-                const riderQuery = {_id: new ObjectId(riderId)};
-                const riderUpdatedDoc ={
-                    $set:{
+            if (deliveryStatus === "delivered" || deliveryStatus === "pending-pickup") {
+                const riderQuery = { _id: new ObjectId(riderId) };
+                const riderUpdatedDoc = {
+                    $set: {
                         workStatus: "available"
                     }
                 };
@@ -329,7 +339,8 @@ async function run() {
                 customer_email: paymentInfo.senderEmail,
                 metadata: {
                     parcelId: paymentInfo.parcelId,
-                    parcelName: paymentInfo.parcelName
+                    parcelName: paymentInfo.parcelName,
+                    trackingId: paymentInfo.trackingId
                 },
                 success_url: `${process.env.SITE_URL}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
                 cancel_url: `${process.env.SITE_URL}/dashboard/payment-cancelled?success=false`,
@@ -345,7 +356,7 @@ async function run() {
         app.patch('/payment-success', async (req, res) => {
             const sessionId = req.query.session_id;
             const session = await stripe.checkout.sessions.retrieve(sessionId);
-            const trackingId = generateTrackingId();
+            // const trackingId = generateTrackingId();
 
             const transactionId = session.payment_intent;
             const query = { transactionId: transactionId };
@@ -356,9 +367,12 @@ async function run() {
                 return res.send({
                     message: 'already exists',
                     transactionId,
-                    trackingId
+                    trackingId: paymentExists.trackingId
                 });
             };
+
+            //use the previous tracking id created during the parcel create process which was set to the session metadata during session creation:
+            const trackingId = session.metadata.trackingId;
 
 
             if (session.payment_status === 'paid') {
@@ -368,8 +382,7 @@ async function run() {
                     $set: {
                         paymentStatus: 'paid',
                         deliveryStatus: 'parcel-paid',
-                        createdAt: new Date(),
-                        trackingId: trackingId
+                        createdAt: new Date()
                     }
                 }
                 const result = await parcelsCollection.updateOne(query, update);
@@ -516,11 +529,11 @@ async function run() {
 
 
         //adding payroll related api's:
-        app.post("/payroll/add-commissions", verifyFirebase, async(req, res) =>{
-            try{
-                const {riderEmail, riderName, totalCommission, parcelCount, submittedDate, month} = req.body;
+        app.post("/payroll/add-commissions", verifyFirebase, async (req, res) => {
+            try {
+                const { riderEmail, riderName, totalCommission, parcelCount, submittedDate, month } = req.body;
 
-                if(!riderEmail || totalCommission === undefined){
+                if (!riderEmail || totalCommission === undefined) {
                     return res.status(400).send({
                         success: false,
                         message: "Missing required fields"
@@ -532,11 +545,15 @@ async function run() {
                     month: month
                 });
 
-                if(existingPayroll){
-                    return res.status(409).send({
-                        success: false,
-                        message: "Commission already submitted for this month"
-                    });
+                if (existingPayroll) {
+                    const updatedDoc = {
+                        $set: {
+                            totalCommission: totalCommission,
+                            parcelCount: parcelCount,
+                            submittedDate: submittedDate,
+                            updatedAt: new Date()
+                        }
+                    }
                 };
 
                 const payrollRecord = {
@@ -550,10 +567,10 @@ async function run() {
                     createdAt: new Date(),
                     updatedAt: new Date()
                 };
-                
+
                 const result = await payrollCollection.insertOne(payrollRecord);
 
-                if(result.insertedId){
+                if (result.insertedId) {
                     return res.status(201).send({
                         success: true,
                         message: "Commission submitted successfully",
@@ -566,8 +583,8 @@ async function run() {
                     message: "Failed to insert paryroll record"
                 });
 
-                 
-            }catch(error){
+
+            } catch (error) {
                 console.log("Payroll error", error);
                 res.status(500).send({
                     success: false,
@@ -577,85 +594,85 @@ async function run() {
             };
         });
 
-        app.get("/payroll", verifyFirebase, verifyAdmin, async(req, res)=>{
-            try{
-                const {riderEmail, month, status} = req.query;
+        app.get("/payroll", verifyFirebase, verifyAdmin, async (req, res) => {
+            try {
+                const { riderEmail, month, status } = req.query;
                 const query = {};
-                if(riderEmail) query.riderEmail = riderEmail;
-                if(month) query.month = month;
-                if(status) query.status = status;
+                if (riderEmail) query.riderEmail = riderEmail;
+                if (month) query.month = month;
+                if (status) query.status = status;
 
-                const cursor = payrollCollection.find(query).sort({createdAt: -1});
+                const cursor = payrollCollection.find(query).sort({ createdAt: -1 });
                 const result = await cursor.toArray();
                 res.send(result);
-            }catch(error){
+            } catch (error) {
                 console.log("Error fetching payroll", error);
-                res.status(500).send({message: "Failed to fetch paryroll records"});
+                res.status(500).send({ message: "Failed to fetch paryroll records" });
             };
         });
 
         //get paryroll for specific rider:
-        app.get("/payroll/:riderEmail", verifyFirebase, async(req, res)=>{
-            try{
+        app.get("/payroll/:riderEmail", verifyFirebase, async (req, res) => {
+            try {
                 const riderEmail = req.params.riderEmail;
-                
-                if(riderEmail !== req.decoded_email){
-                    return res.status(403).send({message: "Forbiddedn Access"});
+
+                if (riderEmail !== req.decoded_email) {
+                    return res.status(403).send({ message: "Forbiddedn Access" });
                 };
 
-                const cursor = payrollCollection.find({riderEmail: riderEmail}).sort({createdAt: -1});
+                const cursor = payrollCollection.find({ riderEmail: riderEmail }).sort({ createdAt: -1 });
                 const result = await cursor.toArray();
 
                 res.send(result);
 
-            }catch(error){
+            } catch (error) {
                 console.log("Error fetching rider payroll", error);
-                res.status(500).send({message: "Failed to fetch paryroll"});
+                res.status(500).send({ message: "Failed to fetch paryroll" });
             };
         });
 
         //updating payroll status admin only:
-        app.patch("/payroll/:id/status", verifyFirebase, verifyAdmin, async(req, res)=>{
-            try{
+        app.patch("/payroll/:id/status", verifyFirebase, verifyAdmin, async (req, res) => {
+            try {
                 const payrollId = req.params.id;
-                const {status} = req.body;
-                const query = {_id: new ObjectId(payrollId)};
+                const { status } = req.body;
+                const query = { _id: new ObjectId(payrollId) };
 
                 const updatedDoc = {
-                    $set:{
+                    $set: {
                         status: status,
                         updatedAt: new Date()
                     }
                 };
 
                 const result = await payrollCollection.updateOne(query, updatedDoc);
-                if(result.modifiedCount === 0){
-                    return res.status(404).send({message: "Payroll record not found"});
+                if (result.modifiedCount === 0) {
+                    return res.status(404).send({ message: "Payroll record not found" });
                 };
 
                 res.send({
                     success: true,
                     message: "Payroll updated successfully."
                 });
-            }catch(error){
+            } catch (error) {
                 console.log("Error updating payroll", error);
-                res.status(500).send({message: "Failed to update payroll status"});
+                res.status(500).send({ message: "Failed to update payroll status" });
             };
         });
 
         //parcel tracking related api:
-        app.get("/trackings/:trackingId/logs", async (req, res) =>{
+        app.get("/trackings/:trackingId/logs", async (req, res) => {
             const trackingId = req.params.trackingId;
-            const query = {trackingId};
+            const query = { trackingId };
             const result = await trackingCollection.find(query).toArray();
             res.send(result);
         });
 
-        app.get('/trackings/:trackingId/stream', (req, res)=>{
+        app.get('/trackings/:trackingId/stream', (req, res) => {
             const trackingId = req.params.trackingId;
 
-            if(!trackingId){
-                return res.status(400).send({message: "Tracking ID is required"});
+            if (!trackingId) {
+                return res.status(400).send({ message: "Tracking ID is required" });
             };
 
             res.setHeader('Content-Type', 'text/event-stream');
@@ -664,40 +681,40 @@ async function run() {
             res.setHeader('Access-Control-Allow-Origin', '*');
 
 
-            trackingCollection.find({trackingId}).toArray()
-                .then(logs =>{
+            trackingCollection.find({ trackingId }).toArray()
+                .then(logs => {
                     res.write(`data: ${JSON.stringify(logs)}\n\n`);
                 })
-                .catch(err =>{
-                    res.write(`data: ${JSON.stringify({error: 'Failed to fetch logs'})}`)
+                .catch(err => {
+                    res.write(`data: ${JSON.stringify({ error: 'Failed to fetch logs' })}`)
                 })
 
-            const heartbeat = setInterval(()=>{
+            const heartbeat = setInterval(() => {
                 res.write(`: heartbeat\n\n`);
             }, 15000);
 
             const changeStream = trackingCollection.watch([
-                {$match: {"fullDocument.trackingId": trackingId}}
+                { $match: { "fullDocument.trackingId": trackingId } }
             ]);
 
-            changeStream.on('change', (change)=>{
-                try{
-                    if(change.operationType === 'insert' || change.operationType === 'update'){
-                        res.write(`data: ${JSON.stringigy(change.fullDocument)}\n\n`);
+            changeStream.on('change', (change) => {
+                try {
+                    if (change.operationType === 'insert' || change.operationType === 'update') {
+                        res.write(`data: ${JSON.stringify(change.fullDocument)}\n\n`);
                     }
-                }catch(err){
+                } catch (err) {
                     console.error('Change stream error', err);
-                    res.write(`data: ${JSON.stringigy({error: 'Connection Error'})}\n\n`);
+                    res.write(`data: ${JSON.stringigy({ error: 'Connection Error' })}\n\n`);
                 }
             });
 
-            res.on('close', () =>{
+            res.on('close', () => {
                 clearInterval(heartbeat);
                 changeStream.close();
                 res.send();
             });
 
-            req.on('error', (err)=>{
+            req.on('error', (err) => {
                 console.error('Request error', err);
                 clearInterval(heartbeat);
                 changeStream.close();
