@@ -98,6 +98,19 @@ async function run() {
             next();
         };
 
+        //verifying rider role:
+        const verifyRider = async (req, res, next) => {
+            const email = req.decoded_email;
+            const query = { email };
+            const user = await usersCollection.findOne(query);
+
+            if (!user || user.role !== 'rider') {
+                return res.status(403).send({ message: "Forbidden Access" });
+            };
+
+            next();
+        }
+
         //tracking log functionality creation:
         const logTracking = async (trackingId, status) => {
             const existingLog = await trackingCollection.findOne({
@@ -222,7 +235,7 @@ async function run() {
                 query.deliveryStatus = { $in: statusArray };
             };
 
-            const cursor = parcelsCollection.find(query).sort({createdAt: -1});
+            const cursor = parcelsCollection.find(query).sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         });
@@ -529,7 +542,7 @@ async function run() {
 
 
         //adding payroll related api's:
-        app.post("/payroll/add-commissions", verifyFirebase, async (req, res) => {
+        app.post("/payroll/add-commissions", verifyFirebase, verifyRider, async (req, res) => {
             try {
                 const { riderEmail, riderName, totalCommission, parcelCount, submittedDate, month } = req.body;
 
