@@ -12,7 +12,7 @@ const Coverage = () => {
 
     const searchCity = e => {
         e.preventDefault();
-        const location = search
+        const location = search //taking the value from the search value from the input of the form.
         const district = serviceCenters.find(c => c.district.toLowerCase().
             includes(location.toLowerCase()));
 
