@@ -25,6 +25,7 @@ import AssignedJobs from "../pages/Dashboard/AssignedJobs/AssignedJobs";
 import CompletedTasks from "../pages/Dashboard/AssignedJobs/CompletedJobs/CompletedTasks";
 import Pricing from "../pages/home/Pricing";
 import TrackParcel from "../pages/Trackparcel/TrackParcel";
+import DashBoardHome from "../pages/Dashboard/DashboardHome/DashBoardHome";
 
 const routes = createBrowserRouter([
     {
@@ -50,15 +51,16 @@ const routes = createBrowserRouter([
         ]
     },
     {
-        path: "/", Component: AuthLayout,
+        path: "/auth", Component: AuthLayout,
         children: [
             {path: "login", Component: Login},
             {path: "register", Component: Register}
         ]
     },
     {
-        path: "dashboard", element: <PrivateRoutes><DashboardLayout></DashboardLayout></PrivateRoutes>,
+        path: "/dashboard", element: <PrivateRoutes><DashboardLayout></DashboardLayout></PrivateRoutes>,
         children: [
+            {index: true, Component: DashBoardHome},
             {path: "my-parcels", Component: MyParcels},
             {path: 'payment-success', Component: PaymentSuccess},
             {path: 'payment-cancelled', Component: PaymentCancelled},
