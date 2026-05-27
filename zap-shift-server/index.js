@@ -222,7 +222,7 @@ async function run() {
             res.send(result);
         });
 
-        app.get("/parcels/riders",verifyFirebase, verifyRider, async (req, res) => {
+        app.get("/parcels/riders", verifyFirebase, verifyRider, async (req, res) => {
             const { riderEmail, deliveryStatus } = req.query;
             const query = {};
             if (riderEmail) {
@@ -371,15 +371,14 @@ async function run() {
             const session = await stripe.checkout.sessions.retrieve(sessionId);
             // const trackingId = generateTrackingId();
 
-            const transactionId = session.payment_intent;
-            const query = { transactionId: transactionId };
+            const query = { sessionId: sessionId };
 
             const paymentExists = await paymentCollection.findOne(query);
 
             if (paymentExists) {
                 return res.send({
                     message: 'already exists',
-                    transactionId,
+                    transactionId: paymentExists.transactionId,
                     trackingId: paymentExists.trackingId
                 });
             };
