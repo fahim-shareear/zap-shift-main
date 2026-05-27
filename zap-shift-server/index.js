@@ -222,7 +222,7 @@ async function run() {
             res.send(result);
         });
 
-        app.get("/parcels/riders", async (req, res) => {
+        app.get("/parcels/riders",verifyFirebase, verifyRider, async (req, res) => {
             const { riderEmail, deliveryStatus } = req.query;
             const query = {};
             if (riderEmail) {
@@ -419,7 +419,6 @@ async function run() {
                     const resultPayment = await paymentCollection.insertOne(payment);
 
                     logTracking(trackingId, 'parcel-paid');
-
 
                     res.send({
                         success: true,
