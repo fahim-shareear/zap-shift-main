@@ -51,7 +51,7 @@ const routes = createBrowserRouter([
         ]
     },
     {
-        path: "/auth", Component: AuthLayout,
+        path: "/", Component: AuthLayout,
         children: [
             {path: "login", Component: Login},
             {path: "register", Component: Register}
