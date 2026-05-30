@@ -46,7 +46,8 @@ const verifyFirebase = async (req, res, next) => {
 
 
 const uri = process.env.MONGO_URI
-const serviceAccount = require("./zap-shift-firebase-sdk-key.json");
+const decoded = Buffer.from(process.env.FB_SERVICE_KEY, 'base64').toString('utf-8');
+const serviceAccount = JSON.parse(decoded);
 const { rejects } = require('assert');
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -805,8 +806,8 @@ async function run() {
 
 
 
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged the mondoDB server. It is connected")
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged the mondoDB server. It is connected")
     }
     finally {
 
