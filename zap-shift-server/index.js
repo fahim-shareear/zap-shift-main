@@ -231,7 +231,7 @@ async function run() {
                     },
                 },
                 {
-                    $project:{
+                    $project: {
                         status: '$_id',
                         count: 1,
                     }
@@ -490,6 +490,55 @@ async function run() {
 
             const result = await riderCollection.insertOne(rider);
             res.status(201).send(result);
+        });
+
+        app.get('/riders/delivery-per-day', async (req, res) => {
+            const email = req.query.email;
+
+            //aggregating pipeline:
+            const pipeline = [
+                {
+                    $match: {
+                        riderEmail: email,
+                        deliveryStatus: 'delivered'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'trackings',
+                        localField: 'trackingId',
+                        foreignField: 'trackingId',
+                        as: 'parcel_trackings'
+                    }
+                },
+                {
+                    $unwind: "$parcel_trackings"
+                },
+                {
+                    $match: {
+                        'parcel_trackings.status': 'delivered'
+                    }
+                },
+                {
+                    $addFields: {
+                        deliveryDay: {
+                            $dateToString: {
+                                format: "%d-%m-%Y",
+                                date: "$parcel_trackings.createdAt"
+                            }
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$deliveryDay",
+                        deliveryCount: {$sum: 1}
+                    }
+                }
+            ];
+
+            const result = await parcelsCollection.aggregate(pipeline).toArray();
+            res.send(result);
         });
 
         app.get('/riders', verifyFirebase, verifyAdmin, async (req, res) => {
