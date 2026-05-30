@@ -223,7 +223,7 @@ async function run() {
             res.send(result);
         });
 
-        app.get("/parcels/devlivery-status/stats/", async (req, res) => {
+        app.get("/parcels/devlivery-status/stats/", verifyFirebase, verifyAdmin, async (req, res) => {
             const pipeline = [
                 {
                     $group: {
@@ -493,7 +493,7 @@ async function run() {
             res.status(201).send(result);
         });
 
-        app.get('/riders/delivery-per-day', async (req, res) => {
+        app.get('/riders/delivery-per-day', verifyFirebase, verifyRider, async (req, res) => {
             const email = req.query.email;
 
             //aggregating pipeline:
@@ -814,13 +814,15 @@ async function run() {
     }
 };
 
-run().catch(console.dir);
+
 
 
 app.get("/", (req, res) => {
     res.send("Server is connected");
 });
 
-app.listen(port, () => {
-    console.log(`Local server is running on port ${port}`);
-});
+run().then(()=>{
+    app.listen(port, () =>{
+        console.log(`Server is running on port ${port}`);
+    });
+}).catch(console.dir);

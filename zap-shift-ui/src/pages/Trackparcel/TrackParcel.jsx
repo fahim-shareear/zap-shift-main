@@ -26,7 +26,7 @@ const TrackParcel = () => {
 
     useEffect(() => {
         const eventSource = new EventSource(
-            `http://localhost:3000/trackings/${trackingId}/stream`
+            `https://zap-shift-server-sand.vercel.app/trackings/${trackingId}/stream`
         );
 
         eventSource.onopen = () => {

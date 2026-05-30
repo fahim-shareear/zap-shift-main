@@ -8,7 +8,7 @@ import CustomerBanner from './CustomerBanner';
 import Feedback from './Feedback';
 import FrequesntAskedQuestion from './FrequesntAskedQuestion';
 
-const feedbackPromise = fetch('http://localhost:3000/feedback').then(res => res.json());
+const feedbackPromise = fetch('https://zap-shift-server-sand.vercel.app/feedback').then(res => res.json());
 
 const Home = () => {
     return (
