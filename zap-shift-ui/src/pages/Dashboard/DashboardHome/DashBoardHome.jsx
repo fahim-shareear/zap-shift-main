@@ -18,7 +18,7 @@ const DashBoardHome = () => {
         return <RiderDashboardHome></RiderDashboardHome>
     }else{
         return <UserDashboardHome></UserDashboardHome>
-    }
+    };
 };
 
 export default DashBoardHome;
