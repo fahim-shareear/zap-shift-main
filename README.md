@@ -1,6 +1,6 @@
 # Zap Shift - Parcel Delivery Platform
 
-#**Live Link**- curious-praline-9b2b35.netlify.app
+#**Live Link**- (https://curious-praline-9b2b35.netlify.app/)
 
 A comprehensive full-stack parcel delivery and logistics management platform that connects users, riders, and administrators for efficient parcel delivery operations. The system provides real-time tracking, payment processing, and complete business management features.
 
