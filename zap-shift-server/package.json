@@ -20,5 +20,9 @@
     "firebase-admin": "^13.7.0",
     "mongodb": "^7.1.0",
     "stripe": "^21.0.0"
+  },
+  "allowScripts": {
+    "@firebase/util@1.15.0": true,
+    "protobufjs@7.6.1": true
   }
 }
